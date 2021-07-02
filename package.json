@@ -4,11 +4,15 @@
   "author": "Artur Kornatowski",
   "license": "MIT",
   "scripts": {
-    "build": "hardhat compile",
+    "compile": "hardhat compile",
     "test": "hardhat test",
     "node": "hardhat node",
     "deploy": "hardhat run --network rinkeby scripts/deploy.js",
-    "verify": "hardhat verify --network rinkeby"
+    "verify": "hardhat verify --network rinkeby",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
@@ -18,15 +22,19 @@
     "@typechain/hardhat": "^2.1.0",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.12.5",
+    "@types/react": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "chai": "^4.3.4",
     "dotenv": "^10.0.0",
     "eslint": "^7.29.0",
-    "eslint-plugin-react": "^7.24.0",
+    "eslint-config-next": "^11.0.1",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.0",
     "hardhat": "^2.4.1",
+    "next": "^11.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "ts-node": "^10.0.0",
     "typechain": "^5.1.1",
     "typescript": "^4.3.5"
