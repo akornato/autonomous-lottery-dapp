@@ -6,7 +6,10 @@ const HomePage: NextPage = () => {
   const { blockNumber } = useStore();
   return (
     <div className="flex items-center justify-center w-screen h-screen">
-      Current block number: {blockNumber}
+      <div>
+        <p>Current block number: {blockNumber}</p>
+        <p>Current lottery id: {Math.floor(blockNumber / 100) * 100}</p>
+      </div>
     </div>
   );
 };

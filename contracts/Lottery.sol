@@ -9,12 +9,21 @@ contract Lottery {
 
     function enterCurrentLottery() external payable {
         require(msg.value >= 0.01 ether);
-        uint256 lotteryId = getCurrentLotteryId();
-        players[lotteryId].push(msg.sender);
-        payouts[lotteryId] += msg.value;
+        uint256 currentLotteryId = getCurrentLotteryId();
+        players[currentLotteryId].push(msg.sender);
+        payouts[currentLotteryId] += msg.value;
     }
 
     function getCurrentLotteryId() public view returns (uint256) {
-        return block.number / 100;
+        return (block.number / 100) * 100;
+    }
+
+    function withdrawPayout(uint256 lotteryId) external {
+        uint256 currentLotteryId = getCurrentLotteryId();
+        require(lotteryId < currentLotteryId);
+        uint256 pseudoRandom = uint256(blockhash(currentLotteryId));
+        uint256 winnerIndex = pseudoRandom % players[lotteryId].length;
+        address payable winner = payable(players[lotteryId][winnerIndex]);
+        winner.transfer(payouts[lotteryId]);
     }
 }
