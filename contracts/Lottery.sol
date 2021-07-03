@@ -4,19 +4,17 @@ pragma solidity ^0.8.6;
 import "hardhat/console.sol";
 
 contract Lottery {
-  string greeting;
+    mapping(uint256 => address[]) public players; // key: lotteryId
+    mapping(uint256 => uint256) public payouts; // key: lotteryId
 
-  constructor(string memory _greeting) {
-    console.log("Deploying a Lottery with greeting:", _greeting);
-    greeting = _greeting;
-  }
+    function enterCurrentLottery() external payable {
+        require(msg.value >= 0.01 ether);
+        uint256 lotteryId = getCurrentLotteryId();
+        players[lotteryId].push(msg.sender);
+        payouts[lotteryId] += msg.value;
+    }
 
-  function greet() public view returns (string memory) {
-    return greeting;
-  }
-
-  function setGreeting(string memory _greeting) public {
-    console.log("Changing greeting from '%s' to '%s'", greeting, _greeting);
-    greeting = _greeting;
-  }
+    function getCurrentLotteryId() public view returns (uint256) {
+        return block.number / 100;
+    }
 }

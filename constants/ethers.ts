@@ -12,3 +12,8 @@ export const provider =
     : new ethers.providers.JsonRpcProvider(
         `https://rinkeby.infura.io/v3/${process.env.INFURA_PROJECT_ID}`
       );
+
+export const signer =
+  typeof window !== "undefined" && window.ethereum
+    ? provider.getSigner()
+    : null;
