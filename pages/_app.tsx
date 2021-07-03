@@ -2,6 +2,7 @@ import React from "react";
 import App, { AppProps, AppContext } from "next/app";
 import { provider } from "@constants/ethers";
 import { StoreProvider, StoreProps } from "@hooks/useStore";
+import "tailwindcss/tailwind.css";
 
 type AppWithStoreProps = AppProps & StoreProps;
 
