@@ -1,11 +1,19 @@
 import React, { useContext, createContext } from "react";
 
-type Store = {};
+export type StoreProps = { blockNumber: number };
+type StoreValue = { blockNumber: number };
 
-const StoreContext = createContext<Store>(undefined!);
+const StoreContext = createContext<StoreValue>(undefined!);
 
-export const StoreProvider: React.FC = ({ children }) => {
-  return <StoreContext.Provider value={{}}>{children}</StoreContext.Provider>;
+export const StoreProvider: React.FC<StoreValue> = ({
+  children,
+  blockNumber,
+}) => {
+  return (
+    <StoreContext.Provider value={{ blockNumber }}>
+      {children}
+    </StoreContext.Provider>
+  );
 };
 
 export const useStore = () => useContext(StoreContext);

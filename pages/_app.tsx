@@ -1,12 +1,31 @@
 import React from "react";
-import { StoreProvider } from "@hooks/useStore";
+import App, { AppProps, AppContext } from "next/app";
+import { provider } from "@constants/ethers";
+import { StoreProvider, StoreProps } from "@hooks/useStore";
 
-const App = ({ Component, pageProps }) => {
+type AppWithStoreProps = AppProps & StoreProps;
+
+const AppWithStore = ({
+  Component,
+  router,
+  pageProps,
+  ...storeProps
+}: AppWithStoreProps) => {
   return (
-    <StoreProvider>
+    <StoreProvider {...storeProps}>
       <Component {...pageProps} />
     </StoreProvider>
   );
 };
 
-export default App;
+// This disables the ability to perform automatic static optimization,
+// causing every page in your app to be server-side rendered.
+
+AppWithStore.getInitialProps = async (appContext: AppContext) => {
+  const appProps = await App.getInitialProps(appContext);
+  const blockNumber = await provider.getBlockNumber();
+
+  return { ...appProps, blockNumber };
+};
+
+export default AppWithStore;
