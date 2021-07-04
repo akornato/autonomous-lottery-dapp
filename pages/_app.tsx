@@ -1,19 +1,18 @@
 import React from "react";
 import App, { AppProps, AppContext } from "next/app";
 import { provider } from "@constants/ethers";
-import { StoreProvider, StoreProps } from "@hooks/useStore";
+import { StoreProvider, StoreInitProps } from "@hooks/useStore";
 import "tailwindcss/tailwind.css";
 
-type AppWithStoreProps = AppProps & StoreProps;
+type AppWithStoreProps = AppProps & { storeInitProps: StoreInitProps };
 
 const AppWithStore = ({
   Component,
-  router,
   pageProps,
-  ...storeProps
+  storeInitProps,
 }: AppWithStoreProps) => {
   return (
-    <StoreProvider {...storeProps}>
+    <StoreProvider {...storeInitProps}>
       <Component {...pageProps} />
     </StoreProvider>
   );
@@ -25,8 +24,9 @@ const AppWithStore = ({
 AppWithStore.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
   const blockNumber = await provider.getBlockNumber();
+  const storeInitProps = { blockNumber };
 
-  return { ...appProps, blockNumber };
+  return { ...appProps, storeInitProps };
 };
 
 export default AppWithStore;
