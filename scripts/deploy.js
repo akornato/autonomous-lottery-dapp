@@ -15,7 +15,7 @@ async function main() {
 
   // We get the contract to deploy
   const Lottery = await hre.ethers.getContractFactory("Lottery");
-  const lottery = await Lottery.deploy("Hello, Hardhat!");
+  const lottery = await Lottery.deploy();
 
   await lottery.deployed();
 
