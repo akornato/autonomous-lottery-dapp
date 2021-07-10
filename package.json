@@ -8,7 +8,7 @@
     "clean": "hardhat clean",
     "test": "hardhat test",
     "node": "hardhat node",
-    "deploy:localhost": "hardhat run --network localhost scripts/deploy.js",
+    "deploy": "hardhat run --network localhost scripts/deploy.js",
     "deploy:rinkeby": "hardhat run --network rinkeby scripts/deploy.js",
     "verify": "hardhat verify --network rinkeby",
     "dev": "next dev",
