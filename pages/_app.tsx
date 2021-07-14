@@ -1,9 +1,12 @@
 import React from "react";
 import App, { AppProps, AppContext } from "next/app";
+import { ethers } from "ethers";
 import { provider } from "@constants/ethers";
 import { StoreProvider, StoreInitProps } from "@hooks/useStore";
+import artifact from "../artifacts/contracts/Lottery.sol/Lottery.json";
 import "tailwindcss/tailwind.css";
 
+import type { Lottery } from "../typechain";
 type AppWithStoreProps = AppProps & { storeInitProps: StoreInitProps };
 
 const AppWithStore = ({
@@ -24,8 +27,16 @@ const AppWithStore = ({
 AppWithStore.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
   const blockNumber = await provider.getBlockNumber();
-  const storeInitProps = { blockNumber };
+  const contract = new ethers.Contract(
+    "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    artifact.abi,
+    provider
+  ) as Lottery;
+  const lotteryId = await contract
+    .getCurrentLotteryId()
+    .then((bigNumber) => bigNumber.toNumber());
 
+  const storeInitProps = { blockNumber, contract, lotteryId };
   return { ...appProps, storeInitProps };
 };
 
