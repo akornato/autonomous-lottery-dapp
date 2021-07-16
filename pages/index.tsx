@@ -12,22 +12,29 @@ const HomePage: NextPage = () => {
         <p>Contract lottery address: {contract.address}</p>
         <p>Current lottery round: {currentRound}</p>
         <table>
-          <tr>
-            <th>Round</th>
-            <th>Players</th>
-            <th>Payout</th>
-          </tr>
-          {rounds.map((round, roundIndex) => (
-            <tr key={round}>
-              <td>{round}</td>
-              <td>
-                {players[roundIndex].map((player) => (
-                  <p key={player}>{player}</p>
-                ))}
-              </td>
-              <td>{payouts[roundIndex]}</td>
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>Players</th>
+              <th>Payout</th>
             </tr>
-          ))}
+          </thead>
+          <tbody>
+            {rounds.map((round, roundIndex) => (
+              <tr key={round}>
+                <td>
+                  {round}
+                  {currentRound === round ? " (ongoing)" : ""}
+                </td>
+                <td>
+                  {players[roundIndex].map((player) => (
+                    <p key={player}>{player}</p>
+                  ))}
+                </td>
+                <td>{payouts[roundIndex]}</td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>
