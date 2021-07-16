@@ -4,7 +4,10 @@ import type { Lottery } from "../typechain";
 export type StoreInitProps = {
   blockNumber: number;
   contract: Lottery;
-  roundId: number;
+  currentRound: number;
+  rounds: number[];
+  players: string[][];
+  payouts: number[];
 };
 type StoreValue = StoreInitProps;
 
@@ -12,12 +15,10 @@ const StoreContext = createContext<StoreValue>(undefined!);
 
 export const StoreProvider: React.FC<StoreInitProps> = ({
   children,
-  blockNumber,
-  contract,
-  roundId,
+  ...storeInitProps
 }) => {
   return (
-    <StoreContext.Provider value={{ blockNumber, contract, roundId }}>
+    <StoreContext.Provider value={{ ...storeInitProps }}>
       {children}
     </StoreContext.Provider>
   );

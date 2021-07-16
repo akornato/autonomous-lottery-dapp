@@ -4,30 +4,42 @@ pragma solidity ^0.8.6;
 import "hardhat/console.sol";
 
 contract Lottery {
-    uint[] public roundIds;
+    uint256[] public rounds;
     address[][] public players;
-    uint[] public payouts;
+    uint256[] public payouts;
 
     function enterCurrentRound() external payable {
         require(msg.value >= 0.01 ether);
-        uint currentRoundId = getCurrentRoundId();
-        if (roundIds[roundIds.length - 1] != currentRoundId) {
-            roundIds.push(currentRoundId);
+        uint256 currentRound = getCurrentRound();
+        if (rounds[rounds.length - 1] != currentRound) {
+            rounds.push(currentRound);
         }
-        uint currentRoundIndex = roundIds.length - 1;
+        uint256 currentRoundIndex = rounds.length - 1;
         players[currentRoundIndex].push(msg.sender);
         payouts[currentRoundIndex] += msg.value;
     }
 
-    function getCurrentRoundId() public view returns (uint) {
+    function getCurrentRound() public view returns (uint256) {
         return (block.number / 100) * 100;
     }
 
-    function withdrawPayout(uint roundId) external {
-        uint currentRoundId = getCurrentRoundId();
+    function getRounds() external view returns (uint256[] memory) {
+        return rounds;
+    }
+
+    function getPlayers() external view returns (address[][] memory) {
+        return players;
+    }
+
+    function getPayouts() external view returns (uint256[] memory) {
+        return payouts;
+    }
+
+    function withdrawPayout(uint256 roundId) external {
+        uint256 currentRoundId = getCurrentRound();
         require(roundId < currentRoundId);
-        uint pseudoRandom = uint(blockhash(roundId + 100));
-        uint winnerIndex = pseudoRandom % players[roundId].length;
+        uint256 pseudoRandom = uint256(blockhash(roundId + 100));
+        uint256 winnerIndex = pseudoRandom % players[roundId].length;
         address payable winner = payable(players[roundId][winnerIndex]);
         winner.transfer(payouts[roundId]);
     }

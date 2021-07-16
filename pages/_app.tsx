@@ -32,11 +32,22 @@ AppWithStore.getInitialProps = async (appContext: AppContext) => {
     artifact.abi,
     provider
   ) as Lottery;
-  const roundId = await contract
-    .getCurrentRoundId()
+  const currentRound = await contract
+    .getCurrentRound()
     .then((bigNumber) => bigNumber.toNumber());
 
-  const storeInitProps = { blockNumber, contract, roundId };
+  const rounds = await contract.getRounds();
+  const players = await contract.getPlayers();
+  const payouts = await contract.getPayouts();
+
+  const storeInitProps = {
+    blockNumber,
+    contract,
+    currentRound,
+    rounds,
+    players,
+    payouts,
+  };
   return { ...appProps, storeInitProps };
 };
 
