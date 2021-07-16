@@ -4,7 +4,7 @@ import type { Lottery } from "../typechain";
 export type StoreInitProps = {
   blockNumber: number;
   contract: Lottery;
-  lotteryId: number;
+  roundId: number;
 };
 type StoreValue = StoreInitProps;
 
@@ -14,10 +14,10 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
   children,
   blockNumber,
   contract,
-  lotteryId,
+  roundId,
 }) => {
   return (
-    <StoreContext.Provider value={{ blockNumber, contract, lotteryId }}>
+    <StoreContext.Provider value={{ blockNumber, contract, roundId }}>
       {children}
     </StoreContext.Provider>
   );

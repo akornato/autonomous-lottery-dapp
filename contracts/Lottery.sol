@@ -4,26 +4,31 @@ pragma solidity ^0.8.6;
 import "hardhat/console.sol";
 
 contract Lottery {
-    mapping(uint256 => address[]) public players; // key: lotteryId
-    mapping(uint256 => uint256) public payouts; // key: lotteryId
+    uint[] public roundIds;
+    address[][] public players;
+    uint[] public payouts;
 
-    function enterCurrentLottery() external payable {
+    function enterCurrentRound() external payable {
         require(msg.value >= 0.01 ether);
-        uint256 currentLotteryId = getCurrentLotteryId();
-        players[currentLotteryId].push(msg.sender);
-        payouts[currentLotteryId] += msg.value;
+        uint currentRoundId = getCurrentRoundId();
+        if (roundIds[roundIds.length - 1] != currentRoundId) {
+            roundIds.push(currentRoundId);
+        }
+        uint currentRoundIndex = roundIds.length - 1;
+        players[currentRoundIndex].push(msg.sender);
+        payouts[currentRoundIndex] += msg.value;
     }
 
-    function getCurrentLotteryId() public view returns (uint256) {
+    function getCurrentRoundId() public view returns (uint) {
         return (block.number / 100) * 100;
     }
 
-    function withdrawPayout(uint256 lotteryId) external {
-        uint256 currentLotteryId = getCurrentLotteryId();
-        require(lotteryId < currentLotteryId);
-        uint256 pseudoRandom = uint256(blockhash(currentLotteryId));
-        uint256 winnerIndex = pseudoRandom % players[lotteryId].length;
-        address payable winner = payable(players[lotteryId][winnerIndex]);
-        winner.transfer(payouts[lotteryId]);
+    function withdrawPayout(uint roundId) external {
+        uint currentRoundId = getCurrentRoundId();
+        require(roundId < currentRoundId);
+        uint pseudoRandom = uint(blockhash(roundId + 100));
+        uint winnerIndex = pseudoRandom % players[roundId].length;
+        address payable winner = payable(players[roundId][winnerIndex]);
+        winner.transfer(payouts[roundId]);
     }
 }
