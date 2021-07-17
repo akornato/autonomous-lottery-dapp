@@ -9,7 +9,7 @@ contract Lottery {
     uint256[] public payouts;
 
     function enterCurrentRound() external payable {
-        require(msg.value >= 0.01 ether);
+        require(msg.value >= 0.01 ether, "Minimum bet value is 0.01 ether");
         uint256 currentRound = getCurrentRound();
         if (rounds[rounds.length - 1] != currentRound) {
             rounds.push(currentRound);
@@ -37,7 +37,10 @@ contract Lottery {
 
     function withdrawPayout(uint256 roundId) external {
         uint256 currentRoundId = getCurrentRound();
-        require(roundId < currentRoundId);
+        require(
+            roundId < currentRoundId,
+            "Payout can be withdrawn for finished rounds only"
+        );
         uint256 pseudoRandom = uint256(blockhash(roundId + 100));
         uint256 winnerIndex = pseudoRandom % players[roundId].length;
         address payable winner = payable(players[roundId][winnerIndex]);
