@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
 import { useStore } from "@hooks/useStore";
-import { provider, contract } from "@constants/ethers";
+import { contract } from "@constants/ethers";
 
 const HomePage: NextPage = () => {
   const {
