@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
 import { useStore } from "@hooks/useStore";
-import { contract } from "@constants/ethers";
 
 const HomePage: NextPage = () => {
   const {
@@ -14,10 +13,12 @@ const HomePage: NextPage = () => {
     signer,
     signerAddress,
     signerBalance,
+    contract,
   } = useStore();
+
   const enterCurrentRound = useCallback(() => {
     contract.enterCurrentRound({ value: 1 });
-  }, []);
+  }, [contract]);
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">

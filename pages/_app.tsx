@@ -1,6 +1,6 @@
 import React from "react";
 import App, { AppProps, AppContext } from "next/app";
-import { provider, contract } from "@constants/ethers";
+import { provider, contractNoSigner } from "@constants/ethers";
 import { StoreProvider, StoreInitProps } from "@hooks/useStore";
 import "tailwindcss/tailwind.css";
 
@@ -24,13 +24,13 @@ const AppWithStore = ({
 AppWithStore.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
   const blockNumber = await provider.getBlockNumber();
-  const currentRound = await contract
+  const currentRound = await contractNoSigner
     .getCurrentRound()
     .then((bigNumber) => bigNumber.toNumber());
 
-  const rounds = await contract.getRounds();
-  const players = await contract.getPlayers();
-  const payouts = await contract.getPayouts();
+  const rounds = await contractNoSigner.getRounds();
+  const players = await contractNoSigner.getPlayers();
+  const payouts = await contractNoSigner.getPayouts();
 
   const storeInitProps = {
     blockNumber,

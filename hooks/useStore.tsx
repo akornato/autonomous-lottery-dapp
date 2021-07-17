@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
-import { provider, contract } from "@constants/ethers";
+import { provider, contractNoSigner } from "@constants/ethers";
 import type { Signer, BigNumber } from "ethers";
+import type { Lottery } from "../typechain";
 
 export type StoreInitProps = {
   blockNumber: number;
@@ -15,6 +16,7 @@ type StoreValue = StoreInitProps & {
   signer?: Signer;
   signerAddress?: string;
   signerBalance?: BigNumber;
+  contract: Lottery;
 };
 
 const StoreContext = createContext<StoreValue>(undefined!);
@@ -23,6 +25,7 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
   children,
   ...storeInitProps
 }) => {
+  const [contract, setContract] = useState(contractNoSigner);
   const [signer, setSigner] = useState<Signer>();
   const [signerAddress, setSignerAddress] = useState<string>();
   const [signerBalance, setSignerBalance] = useState<BigNumber>();
@@ -34,7 +37,7 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
       setSigner(signer);
       setSignerAddress(await signer.getAddress());
       setSignerBalance(await signer.getBalance());
-      contract.connect(signer);
+      setContract(contract.connect(signer));
     } catch (e) {
       console.log(e);
     }
@@ -42,7 +45,7 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
 
   useEffect(() => {
     connect();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <StoreContext.Provider
@@ -52,6 +55,7 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
         signer,
         signerAddress,
         signerBalance,
+        contract,
       }}
     >
       {children}
