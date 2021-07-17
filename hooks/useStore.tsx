@@ -1,4 +1,4 @@
-import React, { useState, useContext, createContext } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
 import { provider, contract } from "@constants/ethers";
 import type { Signer, BigNumber } from "ethers";
 
@@ -39,6 +39,10 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    connect();
+  }, []);
 
   return (
     <StoreContext.Provider

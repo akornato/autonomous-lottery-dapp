@@ -50,9 +50,11 @@ const HomePage: NextPage = () => {
             ))}
           </tbody>
         </table>
-        <div>
-          <button onClick={connect}>Connect</button>
-        </div>
+        {!signer && (
+          <div>
+            <button onClick={connect}>Connect</button>
+          </div>
+        )}
         {signer && (
           <>
             <div>Signer address: {signerAddress}</div>
