@@ -12,7 +12,7 @@ export type StoreInitProps = {
 };
 
 type StoreValue = StoreInitProps & {
-  connect: () => void;
+  connectWallet: () => void;
   signer?: Signer;
   signerAddress?: string;
   signerBalance?: BigNumber;
@@ -30,7 +30,7 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
   const [signerAddress, setSignerAddress] = useState<string>();
   const [signerBalance, setSignerBalance] = useState<BigNumber>();
 
-  const connect = async () => {
+  const connectWallet = async () => {
     try {
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
@@ -44,14 +44,14 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
   };
 
   useEffect(() => {
-    connect();
+    connectWallet();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <StoreContext.Provider
       value={{
         ...storeInitProps,
-        connect,
+        connectWallet,
         signer,
         signerAddress,
         signerBalance,

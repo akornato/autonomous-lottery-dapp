@@ -11,12 +11,14 @@ contract Lottery {
     function enterCurrentRound() external payable {
         require(msg.value >= 0.01 ether, "Minimum bet value is 0.01 ether");
         uint256 currentRound = getCurrentRound();
-        if (rounds[rounds.length - 1] != currentRound) {
+        if (rounds.length == 0 || rounds[rounds.length - 1] != currentRound) {
             rounds.push(currentRound);
+            players.push([msg.sender]);
+            payouts.push(msg.value);
+        } else {
+            players[players.length - 1].push(msg.sender);
+            payouts[payouts.length - 1] += msg.value;
         }
-        uint256 currentRoundIndex = rounds.length - 1;
-        players[currentRoundIndex].push(msg.sender);
-        payouts[currentRoundIndex] += msg.value;
     }
 
     function getCurrentRound() public view returns (uint256) {

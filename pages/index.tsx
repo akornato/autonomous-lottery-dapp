@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
+import { ethers } from "ethers";
 import { useStore } from "@hooks/useStore";
 
 const HomePage: NextPage = () => {
@@ -9,7 +10,7 @@ const HomePage: NextPage = () => {
     rounds,
     players,
     payouts,
-    connect,
+    connectWallet,
     signer,
     signerAddress,
     signerBalance,
@@ -17,7 +18,7 @@ const HomePage: NextPage = () => {
   } = useStore();
 
   const enterCurrentRound = useCallback(() => {
-    contract.enterCurrentRound({ value: 1 });
+    contract.enterCurrentRound({ value: ethers.utils.parseEther("1.0") });
   }, [contract]);
 
   return (
@@ -53,7 +54,7 @@ const HomePage: NextPage = () => {
         </table>
         {!signer && (
           <div>
-            <button onClick={connect}>Connect</button>
+            <button onClick={connectWallet}>Connect Wallet</button>
           </div>
         )}
         {signer && (

@@ -2,14 +2,21 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("Lottery", function () {
-  it("Should return the new greeting once it's changed", async function () {
+  it("Should have correct round payout", async function () {
     const Lottery = await ethers.getContractFactory("Lottery");
-    const lottery = await Lottery.deploy("Hello, world!");
+    const lottery = await Lottery.deploy();
 
     await lottery.deployed();
-    expect(await lottery.greet()).to.equal("Hello, world!");
-
-    await lottery.setGreeting("Hola, mundo!");
-    expect(await lottery.greet()).to.equal("Hola, mundo!");
+    const currentRound = await lottery.getCurrentRound();
+    expect(currentRound).to.equal(0);
+    await expect(
+      lottery.enterCurrentRound({
+        value: ethers.utils.parseEther("0.001"),
+      })
+    ).to.be.revertedWith("Minimum bet value is 0.01 ether");
+    await lottery.enterCurrentRound({ value: ethers.utils.parseEther("0.01") });
+    expect(await lottery.payouts[currentRound]).to.equal(
+      ethers.utils.parseEther("0.01").BigNumber
+    );
   });
 });
