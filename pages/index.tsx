@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { NextPage } from "next";
 import { useStore } from "@hooks/useStore";
+import { provider, contract } from "@constants/ethers";
 
 const HomePage: NextPage = () => {
-  const { blockNumber, currentRound, contract, rounds, players, payouts } =
-    useStore();
+  const {
+    blockNumber,
+    currentRound,
+    rounds,
+    players,
+    payouts,
+    connect,
+    signer,
+    signerAddress,
+    signerBalance,
+  } = useStore();
+  const enterCurrentRound = useCallback(() => {
+    contract.enterCurrentRound({ value: 1 });
+  }, []);
+
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div>
@@ -36,6 +50,18 @@ const HomePage: NextPage = () => {
             ))}
           </tbody>
         </table>
+        <div>
+          <button onClick={connect}>Connect</button>
+        </div>
+        {signer && (
+          <>
+            <div>Signer address: {signerAddress}</div>
+            <div>Signer balance: {signerBalance?.toNumber()}</div>
+            <div>
+              <button onClick={enterCurrentRound}>Enter current round</button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
