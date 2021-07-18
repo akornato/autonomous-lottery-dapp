@@ -5,6 +5,8 @@
 // Runtime Environment's members available in the global scope.
 import hre from "hardhat";
 
+const { PLAYER_ADDRESS } = process.env;
+
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
@@ -18,8 +20,15 @@ async function main() {
   const lottery = await Lottery.deploy();
 
   await lottery.deployed();
-
   console.log("Lottery deployed to:", lottery.address);
+
+  // Send 100 ethers to player address
+  const [sender] = await ethers.getSigners();
+  const tx = await sender.sendTransaction({
+    to: PLAYER_ADDRESS,
+    value: ethers.utils.parseEther("100"),
+  });
+  await tx.wait();
 }
 
 // We recommend this pattern to be able to use async/await everywhere
