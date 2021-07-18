@@ -13,6 +13,8 @@ export type StoreInitProps = {
 };
 
 type StoreValue = StoreInitProps & {
+  error?: Error;
+  setError: (Error) => void;
   connectWallet: () => void;
   signer?: Signer;
   signerAddress?: string;
@@ -26,12 +28,14 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
   children,
   ...storeInitProps
 }) => {
+  const [error, setError] = useState<Error>();
   const [contract, setContract] = useState(contractNoSigner);
   const [signer, setSigner] = useState<Signer>();
   const [signerAddress, setSignerAddress] = useState<string>();
   const [signerBalance, setSignerBalance] = useState<string>();
 
   const connectWallet = async () => {
+    setError(null);
     try {
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
@@ -42,7 +46,7 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
       );
       setContract(contract.connect(signer));
     } catch (e) {
-      console.log(e);
+      setError(e);
     }
   };
 
@@ -54,6 +58,8 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
     <StoreContext.Provider
       value={{
         ...storeInitProps,
+        error,
+        setError,
         connectWallet,
         signer,
         signerAddress,

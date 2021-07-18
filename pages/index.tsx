@@ -10,6 +10,8 @@ const HomePage: NextPage = () => {
     rounds,
     players,
     payouts,
+    error,
+    setError,
     connectWallet,
     signer,
     signerAddress,
@@ -17,9 +19,17 @@ const HomePage: NextPage = () => {
     contract,
   } = useStore();
 
-  const enterCurrentRound = useCallback(() => {
-    contract.enterCurrentRound({ value: ethers.utils.parseEther("1.0") });
-  }, [contract]);
+  const enterCurrentRound = useCallback(async () => {
+    setError(null);
+    try {
+      const tx = await contract.enterCurrentRound({
+        value: ethers.utils.parseEther("1.0"),
+      });
+      const receipt = await tx.wait();
+    } catch (e) {
+      setError(e);
+    }
+  }, [contract, setError]);
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
@@ -66,6 +76,7 @@ const HomePage: NextPage = () => {
             </div>
           </>
         )}
+        {error && <div className="text-xs text-red-500">{error.message}</div>}
       </div>
     </div>
   );
