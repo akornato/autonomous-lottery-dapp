@@ -22,6 +22,7 @@ const HomePage: NextPage = () => {
 
   const enterCurrentRound = useCallback(async () => {
     setError(null);
+    updateStoreProps();
     try {
       const tx = await contract.enterCurrentRound({
         value: ethers.utils.parseEther("1.0"),
