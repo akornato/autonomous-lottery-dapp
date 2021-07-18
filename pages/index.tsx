@@ -10,6 +10,7 @@ const HomePage: NextPage = () => {
     rounds,
     players,
     payouts,
+    updateStoreProps,
     error,
     setError,
     connectWallet,
@@ -29,7 +30,8 @@ const HomePage: NextPage = () => {
     } catch (e) {
       setError(e);
     }
-  }, [contract, setError]);
+    updateStoreProps();
+  }, [contract, setError, updateStoreProps]);
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">

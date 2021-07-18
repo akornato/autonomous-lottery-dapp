@@ -1,10 +1,16 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+  useCallback,
+} from "react";
 import { ethers } from "ethers";
 import { provider, contractNoSigner } from "@constants/ethers";
-import type { Signer, BigNumber } from "ethers";
+import type { Signer } from "ethers";
 import type { Lottery } from "../typechain";
 
-export type StoreInitProps = {
+export type StoreProps = {
   blockNumber: number;
   currentRound: number;
   rounds: number[];
@@ -12,7 +18,8 @@ export type StoreInitProps = {
   payouts: string[];
 };
 
-type StoreValue = StoreInitProps & {
+type StoreValue = StoreProps & {
+  updateStoreProps: () => void;
   error?: Error;
   setError: (Error) => void;
   connectWallet: () => void;
@@ -24,10 +31,38 @@ type StoreValue = StoreInitProps & {
 
 const StoreContext = createContext<StoreValue>(undefined!);
 
-export const StoreProvider: React.FC<StoreInitProps> = ({
+export const getStoreProps = async () => {
+  const blockNumber = await provider.getBlockNumber();
+  const currentRound = await contractNoSigner
+    .getCurrentRound()
+    .then((bigNumber) => bigNumber.toNumber());
+
+  const rounds = await contractNoSigner
+    .getRounds()
+    .then((array) => array.map((bigNumber) => bigNumber.toNumber()));
+  const players = await contractNoSigner.getPlayers();
+  const payouts = await contractNoSigner
+    .getPayouts()
+    .then((array) => array.map(ethers.utils.formatEther));
+
+  return {
+    blockNumber,
+    currentRound,
+    rounds,
+    players,
+    payouts,
+  };
+};
+
+export const StoreProvider: React.FC<StoreProps> = ({
   children,
   ...storeInitProps
 }) => {
+  const [storeProps, setStoreProps] = useState(storeInitProps);
+  const updateStoreProps = useCallback(
+    () => getStoreProps().then(setStoreProps),
+    []
+  );
   const [error, setError] = useState<Error>();
   const [contract, setContract] = useState(contractNoSigner);
   const [signer, setSigner] = useState<Signer>();
@@ -57,7 +92,8 @@ export const StoreProvider: React.FC<StoreInitProps> = ({
   return (
     <StoreContext.Provider
       value={{
-        ...storeInitProps,
+        ...storeProps,
+        updateStoreProps,
         error,
         setError,
         connectWallet,

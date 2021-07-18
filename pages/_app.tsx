@@ -1,11 +1,9 @@
 import React from "react";
 import App, { AppProps, AppContext } from "next/app";
-import { ethers } from "ethers";
-import { provider, contractNoSigner } from "@constants/ethers";
-import { StoreProvider, StoreInitProps } from "@hooks/useStore";
+import { StoreProvider, StoreProps, getStoreProps } from "@hooks/useStore";
 import "tailwindcss/tailwind.css";
 
-type AppWithStoreProps = AppProps & { storeInitProps: StoreInitProps };
+type AppWithStoreProps = AppProps & { storeInitProps: StoreProps };
 
 const AppWithStore = ({
   Component,
@@ -24,27 +22,8 @@ const AppWithStore = ({
 
 AppWithStore.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
-  const blockNumber = await provider.getBlockNumber();
-  const currentRound = await contractNoSigner
-    .getCurrentRound()
-    .then((bigNumber) => bigNumber.toNumber());
 
-  const rounds = await contractNoSigner
-    .getRounds()
-    .then((array) => array.map((bigNumber) => bigNumber.toNumber()));
-  const players = await contractNoSigner.getPlayers();
-  const payouts = await contractNoSigner
-    .getPayouts()
-    .then((array) => array.map(ethers.utils.formatEther));
-
-  const storeInitProps = {
-    blockNumber,
-    currentRound,
-    rounds,
-    players,
-    payouts,
-  };
-  return { ...appProps, storeInitProps };
+  return { ...appProps, storeInitProps: await getStoreProps() };
 };
 
 export default AppWithStore;
