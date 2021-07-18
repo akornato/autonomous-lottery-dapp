@@ -1,5 +1,6 @@
 import React from "react";
 import App, { AppProps, AppContext } from "next/app";
+import { ethers } from "ethers";
 import { provider, contractNoSigner } from "@constants/ethers";
 import { StoreProvider, StoreInitProps } from "@hooks/useStore";
 import "tailwindcss/tailwind.css";
@@ -28,9 +29,13 @@ AppWithStore.getInitialProps = async (appContext: AppContext) => {
     .getCurrentRound()
     .then((bigNumber) => bigNumber.toNumber());
 
-  const rounds = await contractNoSigner.getRounds();
+  const rounds = await contractNoSigner
+    .getRounds()
+    .then((array) => array.map((bigNumber) => bigNumber.toNumber()));
   const players = await contractNoSigner.getPlayers();
-  const payouts = await contractNoSigner.getPayouts();
+  const payouts = await contractNoSigner
+    .getPayouts()
+    .then((array) => array.map(ethers.utils.formatEther));
 
   const storeInitProps = {
     blockNumber,

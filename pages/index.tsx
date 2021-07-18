@@ -43,8 +43,8 @@ const HomePage: NextPage = () => {
                   {currentRound === round ? " (ongoing)" : ""}
                 </td>
                 <td>
-                  {players[roundIndex].map((player) => (
-                    <p key={player}>{player}</p>
+                  {players[roundIndex].map((player, index) => (
+                    <p key={player + index}>{player}</p>
                   ))}
                 </td>
                 <td>{payouts[roundIndex]}</td>
@@ -60,7 +60,7 @@ const HomePage: NextPage = () => {
         {signer && (
           <>
             <div>Signer address: {signerAddress}</div>
-            <div>Signer balance: {signerBalance?.toNumber()}</div>
+            <div>Signer balance: {signerBalance}</div>
             <div>
               <button onClick={enterCurrentRound}>Enter current round</button>
             </div>
