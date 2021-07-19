@@ -8,6 +8,16 @@ contract Lottery {
     address[][] public players;
     uint256[] public payouts;
 
+    uint256 public roundDurationInBlocks = 10;
+
+    modifier onlyFinishedRound(uint256 roundStartingBlock) {
+        require(
+            block.number > roundStartingBlock + roundDurationInBlocks,
+            "Round not finished yet"
+        );
+        _;
+    }
+
     function enterCurrentRound() external payable {
         require(msg.value >= 0.01 ether, "Minimum bet value is 0.01 ether");
         uint256 currentRound = getCurrentRound();
@@ -22,7 +32,7 @@ contract Lottery {
     }
 
     function getCurrentRound() public view returns (uint256) {
-        return (block.number / 100) * 100;
+        return (block.number / roundDurationInBlocks) * roundDurationInBlocks;
     }
 
     function getRounds() external view returns (uint256[] memory) {
@@ -37,15 +47,24 @@ contract Lottery {
         return payouts;
     }
 
-    function withdrawPayout(uint256 roundId) external {
-        uint256 currentRoundId = getCurrentRound();
-        require(
-            roundId < currentRoundId,
-            "Payout can be withdrawn for finished rounds only"
+    function getWinner(uint256 roundStartingBlock)
+        public
+        view
+        onlyFinishedRound(roundStartingBlock)
+        returns (address)
+    {
+        uint256 pseudoRandom = uint256(
+            blockhash(roundStartingBlock + roundDurationInBlocks)
         );
-        uint256 pseudoRandom = uint256(blockhash(roundId + 100));
-        uint256 winnerIndex = pseudoRandom % players[roundId].length;
-        address payable winner = payable(players[roundId][winnerIndex]);
-        winner.transfer(payouts[roundId]);
+        uint256 winnerIndex = pseudoRandom % players[roundStartingBlock].length;
+        return players[roundStartingBlock][winnerIndex];
+    }
+
+    function withdrawPayout(uint256 roundStartingBlock)
+        external
+        onlyFinishedRound(roundStartingBlock)
+    {
+        address payable winner = payable(getWinner(roundStartingBlock));
+        winner.transfer(payouts[roundStartingBlock]);
     }
 }

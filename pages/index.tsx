@@ -3,6 +3,8 @@ import { NextPage } from "next";
 import { ethers } from "ethers";
 import { useStore } from "@hooks/useStore";
 
+const roundDurationInBlocks = 10;
+
 const HomePage: NextPage = () => {
   const {
     blockNumber,
@@ -27,12 +29,26 @@ const HomePage: NextPage = () => {
       const tx = await contract.enterCurrentRound({
         value: ethers.utils.parseEther("1.0"),
       });
-      const receipt = await tx.wait();
+      await tx.wait();
     } catch (e) {
       setError(e);
     }
     updateStoreProps();
   }, [contract, setError, updateStoreProps]);
+
+  const withdrawPayout = useCallback(
+    async (roundStartingBlock: number) => {
+      setError(null);
+      try {
+        const tx = await contract.withdrawPayout(roundStartingBlock);
+        await tx.wait();
+      } catch (e) {
+        setError(e);
+      }
+      updateStoreProps();
+    },
+    [contract, setError, updateStoreProps]
+  );
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
@@ -43,17 +59,19 @@ const HomePage: NextPage = () => {
         <table>
           <thead>
             <tr>
-              <th>Round</th>
+              <th>Round starting block</th>
               <th>Players</th>
               <th>Payout</th>
+              <th>Winner</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            {rounds.map((round, roundIndex) => (
-              <tr key={round}>
+            {rounds.map((roundStartingBlock, roundIndex) => (
+              <tr key={roundStartingBlock}>
                 <td>
-                  {round}
-                  {currentRound === round ? " (ongoing)" : ""}
+                  {roundStartingBlock}
+                  {currentRound === roundStartingBlock ? " (ongoing)" : ""}
                 </td>
                 <td>
                   {players[roundIndex].map((player, index) => (
@@ -61,6 +79,16 @@ const HomePage: NextPage = () => {
                   ))}
                 </td>
                 <td>{payouts[roundIndex]}</td>
+                {/* <td>
+                  {(async () => {
+                    if (
+                      blockNumber >
+                      roundStartingBlock + roundDurationInBlocks
+                    ) {
+                      return await contract.getWinner(roundStartingBlock);
+                    } else return "Ongoing";
+                  })()}
+                </td> */}
               </tr>
             ))}
           </tbody>

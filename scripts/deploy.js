@@ -5,7 +5,7 @@
 // Runtime Environment's members available in the global scope.
 import hre from "hardhat";
 
-const { PLAYER_ADDRESS } = process.env;
+const { METAMASK_ADDRESS } = process.env;
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -17,18 +17,28 @@ async function main() {
 
   // We get the contract to deploy
   const Lottery = await hre.ethers.getContractFactory("Lottery");
-  const lottery = await Lottery.deploy();
+  let lottery = await Lottery.deploy();
 
   await lottery.deployed();
   console.log("Lottery deployed to:", lottery.address);
 
-  // Send 100 ethers to player address
-  const [sender] = await ethers.getSigners();
-  const tx = await sender.sendTransaction({
-    to: PLAYER_ADDRESS,
+  const signers = await ethers.getSigners();
+
+  console.log("Send 100 ethers to Metamask address");
+  const tx = await signers[0].sendTransaction({
+    to: METAMASK_ADDRESS,
     value: ethers.utils.parseEther("100"),
   });
   await tx.wait();
+
+  for (const signer of signers) {
+    console.log(`Make ${signer.address} enter current round`);
+    lottery = lottery.connect(signer);
+    const tx = await lottery.enterCurrentRound({
+      value: ethers.utils.parseEther("1.0"),
+    });
+    await tx.wait();
+  }
 }
 
 // We recommend this pattern to be able to use async/await everywhere
