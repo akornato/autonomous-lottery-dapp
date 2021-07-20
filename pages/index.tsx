@@ -77,7 +77,15 @@ const HomePage: NextPage = () => {
                   ))}
                 </td>
                 <td>{payouts[roundIndex]}</td>
-                <td>{winners[roundIndex]}</td>
+                <td>
+                  {winners[roundIndex] || (
+                    <div>
+                      <button onClick={enterCurrentRound}>
+                        Enter current round
+                      </button>
+                    </div>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -91,9 +99,6 @@ const HomePage: NextPage = () => {
           <>
             <div>Signer address: {signerAddress}</div>
             <div>Signer balance: {signerBalance}</div>
-            <div>
-              <button onClick={enterCurrentRound}>Enter current round</button>
-            </div>
           </>
         )}
         {error && <div className="text-xs text-red-500">{error.message}</div>}

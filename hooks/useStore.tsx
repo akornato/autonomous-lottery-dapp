@@ -51,7 +51,7 @@ export const getStoreProps = async () => {
   const winners = await Promise.all(
     rounds.map((roundStartingBlock) =>
       currentRoundStartingBlock === roundStartingBlock
-        ? "round ongoing"
+        ? null
         : contractNoSigner.getWinner(roundStartingBlock)
     )
   );
