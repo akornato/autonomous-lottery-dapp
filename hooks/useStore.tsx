@@ -33,18 +33,21 @@ type StoreValue = StoreProps & {
 const StoreContext = createContext<StoreValue>(undefined!);
 
 export const getStoreProps = async () => {
-  const blockNumber = await provider.getBlockNumber();
-  const currentRoundStartingBlock = await contractNoSigner
-    .getCurrentRoundStartingBlock()
-    .then((bigNumber) => bigNumber.toNumber());
+  const [blockNumber, currentRoundStartingBlock, rounds, players, payouts] =
+    await Promise.all([
+      provider.getBlockNumber(),
+      contractNoSigner
+        .getCurrentRoundStartingBlock()
+        .then((bigNumber) => bigNumber.toNumber()),
+      contractNoSigner
+        .getRounds()
+        .then((array) => array.map((bigNumber) => bigNumber.toNumber())),
+      contractNoSigner.getPlayers(),
+      contractNoSigner
+        .getPayouts()
+        .then((array) => array.map(ethers.utils.formatEther)),
+    ]);
 
-  const rounds = await contractNoSigner
-    .getRounds()
-    .then((array) => array.map((bigNumber) => bigNumber.toNumber()));
-  const players = await contractNoSigner.getPlayers();
-  const payouts = await contractNoSigner
-    .getPayouts()
-    .then((array) => array.map(ethers.utils.formatEther));
   const winners = await Promise.all(
     rounds.map((roundStartingBlock) =>
       currentRoundStartingBlock === roundStartingBlock
