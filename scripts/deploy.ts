@@ -4,6 +4,7 @@
 // When running the script with `hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 import hre from "hardhat";
+import { ethers } from "hardhat";
 
 const { METAMASK_ADDRESS } = process.env;
 
@@ -32,7 +33,7 @@ async function main() {
   await tx.wait();
 
   for (const signer of signers) {
-    console.log(`Make ${signer.address} enter current round`);
+    console.log(`Make ${await signer.getAddress()} enter current round`);
     const tx = await lottery.connect(signer).enterCurrentRound({
       value: ethers.utils.parseEther("1.0"),
     });
