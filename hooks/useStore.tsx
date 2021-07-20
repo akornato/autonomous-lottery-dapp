@@ -16,6 +16,7 @@ export type StoreProps = {
   rounds: number[];
   players: string[][];
   payouts: string[];
+  winners: string[];
 };
 
 type StoreValue = StoreProps & {
@@ -44,6 +45,13 @@ export const getStoreProps = async () => {
   const payouts = await contractNoSigner
     .getPayouts()
     .then((array) => array.map(ethers.utils.formatEther));
+  const winners = await Promise.all(
+    rounds.map((roundStartingBlock) =>
+      currentRoundStartingBlock === roundStartingBlock
+        ? "round ongoing"
+        : contractNoSigner.getWinner(roundStartingBlock)
+    )
+  );
 
   return {
     blockNumber,
@@ -51,6 +59,7 @@ export const getStoreProps = async () => {
     rounds,
     players,
     payouts,
+    winners,
   };
 };
 

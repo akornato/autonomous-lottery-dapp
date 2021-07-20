@@ -12,6 +12,7 @@ const HomePage: NextPage = () => {
     rounds,
     players,
     payouts,
+    winners,
     updateStoreProps,
     error,
     setError,
@@ -69,28 +70,14 @@ const HomePage: NextPage = () => {
           <tbody>
             {rounds.map((roundStartingBlock, roundIndex) => (
               <tr key={roundStartingBlock}>
-                <td>
-                  {roundStartingBlock}
-                  {currentRoundStartingBlock === roundStartingBlock
-                    ? " (ongoing)"
-                    : ""}
-                </td>
+                <td>{roundStartingBlock}</td>
                 <td>
                   {players[roundIndex].map((player, index) => (
                     <p key={player + index}>{player}</p>
                   ))}
                 </td>
                 <td>{payouts[roundIndex]}</td>
-                {/* <td>
-                  {(async () => {
-                    if (
-                      blockNumber >
-                      roundStartingBlock + roundDurationInBlocks
-                    ) {
-                      return await contract.getWinner(roundStartingBlock);
-                    } else return "Ongoing";
-                  })()}
-                </td> */}
+                <td>{winners[roundIndex]}</td>
               </tr>
             ))}
           </tbody>
