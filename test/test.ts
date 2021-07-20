@@ -15,7 +15,7 @@ describe("Lottery", function () {
 
   it("Should have correct round starting block", async function () {
     const roundStartingBlock = await lottery
-      .getCurrentRound()
+      .getCurrentRoundStartingBlock()
       .then((bigNumber) => bigNumber.toNumber());
     expect(roundStartingBlock).to.equal(0);
   });
@@ -40,5 +40,25 @@ describe("Lottery", function () {
     expect(payouts[0]).to.equal(ethers.utils.parseEther("7.0"));
     expect(payouts[1]).to.equal(ethers.utils.parseEther("10.0"));
     expect(payouts[2]).to.equal(ethers.utils.parseEther("3.0"));
+  });
+
+  it("Should have winners", async function () {
+    const rounds = await lottery.getRounds();
+    const winners = [
+      await lottery.getWinner(rounds[0]),
+      await lottery.getWinner(rounds[1]),
+    ];
+    let firstWinnerFound = false;
+    let secondWinnerFound = false;
+    for (const signer of signers) {
+      if (winners[0] == (await signer.getAddress())) {
+        firstWinnerFound = true;
+      }
+      if (winners[1] == (await signer.getAddress())) {
+        secondWinnerFound = true;
+      }
+    }
+    expect(firstWinnerFound).to.be.true;
+    expect(secondWinnerFound).to.be.true;
   });
 });

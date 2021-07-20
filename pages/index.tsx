@@ -8,7 +8,7 @@ const roundDurationInBlocks = 10;
 const HomePage: NextPage = () => {
   const {
     blockNumber,
-    currentRound,
+    currentRoundStartingBlock,
     rounds,
     players,
     payouts,
@@ -55,7 +55,7 @@ const HomePage: NextPage = () => {
       <div>
         <p>Current block number: {blockNumber}</p>
         <p>Contract lottery address: {contract.address}</p>
-        <p>Current lottery round: {currentRound}</p>
+        <p>Current lottery round: {currentRoundStartingBlock}</p>
         <table>
           <thead>
             <tr>
@@ -71,7 +71,9 @@ const HomePage: NextPage = () => {
               <tr key={roundStartingBlock}>
                 <td>
                   {roundStartingBlock}
-                  {currentRound === roundStartingBlock ? " (ongoing)" : ""}
+                  {currentRoundStartingBlock === roundStartingBlock
+                    ? " (ongoing)"
+                    : ""}
                 </td>
                 <td>
                   {players[roundIndex].map((player, index) => (

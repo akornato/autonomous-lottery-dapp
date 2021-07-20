@@ -12,7 +12,7 @@ import type { Lottery } from "../typechain";
 
 export type StoreProps = {
   blockNumber: number;
-  currentRound: number;
+  currentRoundStartingBlock: number;
   rounds: number[];
   players: string[][];
   payouts: string[];
@@ -33,8 +33,8 @@ const StoreContext = createContext<StoreValue>(undefined!);
 
 export const getStoreProps = async () => {
   const blockNumber = await provider.getBlockNumber();
-  const currentRound = await contractNoSigner
-    .getCurrentRound()
+  const currentRoundStartingBlock = await contractNoSigner
+    .getCurrentRoundStartingBlock()
     .then((bigNumber) => bigNumber.toNumber());
 
   const rounds = await contractNoSigner
@@ -47,7 +47,7 @@ export const getStoreProps = async () => {
 
   return {
     blockNumber,
-    currentRound,
+    currentRoundStartingBlock,
     rounds,
     players,
     payouts,
