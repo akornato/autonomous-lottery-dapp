@@ -33,8 +33,7 @@ async function main() {
 
   for (const signer of signers) {
     console.log(`Make ${signer.address} enter current round`);
-    lottery = lottery.connect(signer);
-    const tx = await lottery.enterCurrentRound({
+    const tx = await lottery.connect(signer).enterCurrentRound({
       value: ethers.utils.parseEther("1.0"),
     });
     await tx.wait();
