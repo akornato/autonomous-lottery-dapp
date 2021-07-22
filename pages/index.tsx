@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
 import { ethers } from "ethers";
+import { Table, Button } from "antd";
 import { useStore } from "@hooks/useStore";
 
 const roundDurationInBlocks = 10;
@@ -57,53 +58,46 @@ const HomePage: NextPage = () => {
         <p>Current block number: {blockNumber}</p>
         <p>Contract lottery address: {contract.address}</p>
         <p>Current lottery round: {currentRoundStartingBlock}</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Round starting block</th>
-              <th>Players</th>
-              <th>Payout</th>
-              <th>Winner</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {rounds.map((roundStartingBlock, roundIndex) => (
-              <tr key={roundStartingBlock}>
-                <td>{roundStartingBlock}</td>
-                <td>
-                  {players[roundIndex].map((player, index) => (
-                    <p key={player + index}>{player}</p>
-                  ))}
-                </td>
-                <td>{payouts[roundIndex]}</td>
-                <td>
-                  {winners[roundIndex] || (
-                    <div>
-                      <button onClick={enterCurrentRound}>
-                        Enter current round
-                      </button>
-                    </div>
-                  )}
-                  {winners[roundIndex] && (
-                    <div>
-                      <button
-                        onClick={() => withdrawPayout(roundIndex)}
-                      >
-                        Withdraw payout
-                      </button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {!signer && (
-          <div>
-            <button onClick={connectWallet}>Connect Wallet</button>
-          </div>
-        )}
+        <Table
+          dataSource={rounds.map((roundStartingBlock, roundIndex) => ({
+            roundStartingBlock,
+            players: players[roundIndex],
+            payout: payouts[roundIndex],
+            winner: roundIndex,
+          }))}
+        >
+          <Table.Column
+            title="Round starting block"
+            dataIndex="roundStartingBlock"
+          />
+          <Table.Column
+            title="Players"
+            dataIndex="players"
+            render={(players) => (
+              <>
+                {players.map((player) => (
+                  <div key={player}>{player}</div>
+                ))}
+              </>
+            )}
+          />
+          <Table.Column title="Payout" dataIndex="payout" />
+          <Table.Column
+            title="Winner"
+            dataIndex="winner"
+            render={(roundIndex) =>
+              winners[roundIndex] ? (
+                <Button onClick={() => withdrawPayout(roundIndex)}>
+                  Withdraw payout
+                </Button>
+              ) : (
+                <Button onClick={enterCurrentRound}>Enter current round</Button>
+              )
+            }
+          />
+        </Table>
+
+        {!signer && <Button onClick={connectWallet}>Connect Wallet</Button>}
         {signer && (
           <>
             <div>Signer address: {signerAddress}</div>

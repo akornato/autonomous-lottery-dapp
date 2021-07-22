@@ -27,6 +27,7 @@
     "@types/react": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
+    "antd": "^4.16.8",
     "autoprefixer": "^10.2.6",
     "chai": "^4.3.4",
     "dotenv": "^10.0.0",
