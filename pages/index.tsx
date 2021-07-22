@@ -38,10 +38,10 @@ const HomePage: NextPage = () => {
   }, [contract, setError, updateStoreProps]);
 
   const withdrawPayout = useCallback(
-    async (roundStartingBlock: number) => {
+    async (roundIndex: number) => {
       setError(null);
       try {
-        const tx = await contract.withdrawPayout(roundStartingBlock);
+        const tx = await contract.withdrawPayout(roundIndex);
         await tx.wait();
       } catch (e) {
         setError(e);
@@ -82,6 +82,15 @@ const HomePage: NextPage = () => {
                     <div>
                       <button onClick={enterCurrentRound}>
                         Enter current round
+                      </button>
+                    </div>
+                  )}
+                  {winners[roundIndex] && (
+                    <div>
+                      <button
+                        onClick={() => withdrawPayout(roundIndex)}
+                      >
+                        Withdraw payout
                       </button>
                     </div>
                   )}

@@ -10,7 +10,8 @@ contract Lottery {
 
     uint256 public roundDurationInBlocks = 10;
 
-    modifier onlyFinishedRound(uint256 roundStartingBlock) {
+    modifier onlyFinishedRound(uint256 roundIndex) {
+        uint256 roundStartingBlock = rounds[roundIndex];
         require(
             block.number > roundStartingBlock + roundDurationInBlocks,
             "Round not finished yet"
@@ -50,22 +51,13 @@ contract Lottery {
         return payouts;
     }
 
-    function getWinner(uint256 roundStartingBlock)
+    function getWinner(uint256 roundIndex)
         public
         view
-        onlyFinishedRound(roundStartingBlock)
+        onlyFinishedRound(roundIndex)
         returns (address)
     {
-        uint256 roundIndex = 0;
-        bool found = false;
-        for (uint256 i = 0; i < rounds.length; i++) {
-            if (rounds[i] == roundStartingBlock) {
-                roundIndex = i;
-                found = true;
-                break;
-            }
-        }
-        require(found, "No round with this roundStartingBlock exists");
+        uint256 roundStartingBlock = rounds[roundIndex];
         uint256 pseudoRandom = uint256(
             blockhash(roundStartingBlock + roundDurationInBlocks)
         );
@@ -73,11 +65,12 @@ contract Lottery {
         return players[roundIndex][winnerIndex];
     }
 
-    function withdrawPayout(uint256 roundStartingBlock)
+    function withdrawPayout(uint256 roundIndex)
         external
-        onlyFinishedRound(roundStartingBlock)
+        onlyFinishedRound(roundIndex)
     {
-        address payable winner = payable(getWinner(roundStartingBlock));
-        winner.transfer(payouts[roundStartingBlock]);
+        address payable winner = payable(getWinner(roundIndex));
+        payouts[roundIndex] = 0;
+        winner.transfer(payouts[roundIndex]);
     }
 }
