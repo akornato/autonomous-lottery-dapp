@@ -77,43 +77,27 @@ const HomePage: NextPage = () => {
           className="pt-5"
           dataSource={rounds.map((roundStartingBlock, roundIndex) => ({
             key: roundStartingBlock,
-            roundIndex,
+            roundStartingBlock,
+            players: players[roundIndex].map((player) => (
+              <div key={player}>{player}</div>
+            )),
+            payout: payouts[roundIndex],
+            winner: winners[roundIndex] ? (
+              <Button onClick={() => withdrawPayout(roundIndex)}>
+                Withdraw payout
+              </Button>
+            ) : (
+              <Button onClick={enterCurrentRound}>Enter current round</Button>
+            ),
           }))}
         >
           <Table.Column
             title="Round starting block"
-            dataIndex="roundIndex"
-            render={(roundIndex) => rounds[roundIndex]}
+            dataIndex="roundStartingBlock"
           />
-          <Table.Column
-            title="Players"
-            dataIndex="roundIndex"
-            render={(roundIndex) => (
-              <>
-                {players[roundIndex].map((player) => (
-                  <div key={player}>{player}</div>
-                ))}
-              </>
-            )}
-          />
-          <Table.Column
-            title="Payout"
-            dataIndex="roundIndex"
-            render={(roundIndex) => payouts[roundIndex]}
-          />
-          <Table.Column
-            title="Winner"
-            dataIndex="roundIndex"
-            render={(roundIndex) =>
-              winners[roundIndex] ? (
-                <Button onClick={() => withdrawPayout(roundIndex)}>
-                  Withdraw payout
-                </Button>
-              ) : (
-                <Button onClick={enterCurrentRound}>Enter current round</Button>
-              )
-            }
-          />
+          <Table.Column title="Players" dataIndex="players" />
+          <Table.Column title="Payout" dataIndex="payout" />
+          <Table.Column title="Winner" dataIndex="winner" />
         </Table>
         {error && (
           <div className="flex justify-center text-xs text-red-500">
