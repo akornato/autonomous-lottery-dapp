@@ -9,7 +9,6 @@ const roundDurationInBlocks = 10;
 const HomePage: NextPage = () => {
   const {
     blockNumber,
-    currentRoundStartingBlock,
     rounds,
     players,
     payouts,
@@ -53,12 +52,29 @@ const HomePage: NextPage = () => {
   );
 
   return (
-    <div className="flex items-center justify-center w-screen h-screen">
-      <div>
-        <p>Current block number: {blockNumber}</p>
-        <p>Contract lottery address: {contract.address}</p>
-        <p>Current lottery round: {currentRoundStartingBlock}</p>
+    <>
+      <div className="fixed top-0 flex items-center w-screen h-12 px-10 text-white bg-blue-500">
+        <div className="text-base">Autonomous Lottery Dapp</div>
+        <div className="ml-auto">
+          {!signer && <Button onClick={connectWallet}>Connect Wallet</Button>}
+          {signer && signerAddress && (
+            <div>
+              Signer address:{" "}
+              {`${signerAddress.substring(0, 6)}...${signerAddress.substring(
+                signerAddress.length - 4
+              )}`}{" "}
+              | balance: {signerBalance}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="fixed bottom-0 w-screen px-10 pt-3 overflow-auto top-12">
+        <div className="pl-4">
+          Current block number: {blockNumber} | Contract lottery address:{" "}
+          {contract.address}
+        </div>
         <Table
+          className="pt-5"
           dataSource={rounds.map((roundStartingBlock, roundIndex) => ({
             key: roundStartingBlock,
             roundIndex,
@@ -99,17 +115,13 @@ const HomePage: NextPage = () => {
             }
           />
         </Table>
-
-        {!signer && <Button onClick={connectWallet}>Connect Wallet</Button>}
-        {signer && (
-          <>
-            <p>Signer address: {signerAddress}</p>
-            <p>Signer balance: {signerBalance}</p>
-          </>
+        {error && (
+          <div className="flex justify-center text-xs text-red-500">
+            {error.message}
+          </div>
         )}
-        {error && <p className="text-xs text-red-500">{error.message}</p>}
       </div>
-    </div>
+    </>
   );
 };
 
