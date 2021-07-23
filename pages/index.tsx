@@ -60,31 +60,34 @@ const HomePage: NextPage = () => {
         <p>Current lottery round: {currentRoundStartingBlock}</p>
         <Table
           dataSource={rounds.map((roundStartingBlock, roundIndex) => ({
-            roundStartingBlock,
-            players: players[roundIndex],
-            payout: payouts[roundIndex],
-            winner: roundIndex,
+            key: roundStartingBlock,
+            roundIndex,
           }))}
         >
           <Table.Column
             title="Round starting block"
-            dataIndex="roundStartingBlock"
+            dataIndex="roundIndex"
+            render={(roundIndex) => rounds[roundIndex]}
           />
           <Table.Column
             title="Players"
-            dataIndex="players"
-            render={(players) => (
+            dataIndex="roundIndex"
+            render={(roundIndex) => (
               <>
-                {players.map((player) => (
+                {players[roundIndex].map((player) => (
                   <div key={player}>{player}</div>
                 ))}
               </>
             )}
           />
-          <Table.Column title="Payout" dataIndex="payout" />
+          <Table.Column
+            title="Payout"
+            dataIndex="roundIndex"
+            render={(roundIndex) => payouts[roundIndex]}
+          />
           <Table.Column
             title="Winner"
-            dataIndex="winner"
+            dataIndex="roundIndex"
             render={(roundIndex) =>
               winners[roundIndex] ? (
                 <Button onClick={() => withdrawPayout(roundIndex)}>
@@ -100,11 +103,11 @@ const HomePage: NextPage = () => {
         {!signer && <Button onClick={connectWallet}>Connect Wallet</Button>}
         {signer && (
           <>
-            <div>Signer address: {signerAddress}</div>
-            <div>Signer balance: {signerBalance}</div>
+            <p>Signer address: {signerAddress}</p>
+            <p>Signer balance: {signerBalance}</p>
           </>
         )}
-        {error && <div className="text-xs text-red-500">{error.message}</div>}
+        {error && <p className="text-xs text-red-500">{error.message}</p>}
       </div>
     </div>
   );
