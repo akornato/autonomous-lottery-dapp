@@ -3,12 +3,12 @@ import { NextPage } from "next";
 import { ethers } from "ethers";
 import { Table, Button } from "antd";
 import { useStore } from "@hooks/useStore";
-
-const roundDurationInBlocks = 10;
+import { roundDurationInBlocks } from "@constants/ethers";
 
 const HomePage: NextPage = () => {
   const {
     blockNumber,
+    currentRoundStartingBlock,
     rounds,
     players,
     payouts,
@@ -69,17 +69,23 @@ const HomePage: NextPage = () => {
         </div>
       </div>
       <div className="fixed bottom-0 w-screen px-10 pt-3 overflow-auto top-12">
-        <div className="pl-4">
-          Current block number: {blockNumber} | Contract lottery address:{" "}
-          {contract.address}
+        <div className="flex justify-between">
+          <div className="px-4">
+            Current block number: {blockNumber} | Contract lottery address:{" "}
+            {contract.address}
+          </div>
+          {blockNumber ===
+            currentRoundStartingBlock + roundDurationInBlocks - 1 && (
+            <Button onClick={enterCurrentRound}>Start new round</Button>
+          )}
         </div>
         <Table
           className="pt-5"
           dataSource={rounds.map((roundStartingBlock, roundIndex) => ({
             key: roundStartingBlock,
             roundStartingBlock,
-            players: players[roundIndex].map((player) => (
-              <div key={player}>{player}</div>
+            players: players[roundIndex].map((player, playerIndex) => (
+              <div key={`${player}${playerIndex}`}>{player}</div>
             )),
             payout: payouts[roundIndex],
             winner: winners[roundIndex] ? (
@@ -87,7 +93,7 @@ const HomePage: NextPage = () => {
                 Withdraw payout
               </Button>
             ) : (
-              <Button onClick={enterCurrentRound}>Enter current round</Button>
+              <Button onClick={enterCurrentRound}>Enter round</Button>
             ),
           }))}
         >
@@ -100,7 +106,7 @@ const HomePage: NextPage = () => {
           <Table.Column title="Winner" dataIndex="winner" />
         </Table>
         {error && (
-          <div className="flex justify-center text-xs text-red-500">
+          <div className="flex justify-center pb-5 text-xs text-red-500">
             {error.message}
           </div>
         )}

@@ -13,7 +13,7 @@ contract Lottery {
     modifier onlyFinishedRound(uint256 roundIndex) {
         uint256 roundStartingBlock = rounds[roundIndex];
         require(
-            block.number > roundStartingBlock + roundDurationInBlocks,
+            block.number >= roundStartingBlock + roundDurationInBlocks - 1,
             "Round not finished yet"
         );
         _;

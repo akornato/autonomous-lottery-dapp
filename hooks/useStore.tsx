@@ -6,7 +6,11 @@ import React, {
   useCallback,
 } from "react";
 import { ethers } from "ethers";
-import { provider, contractNoSigner } from "@constants/ethers";
+import {
+  provider,
+  contractNoSigner,
+  roundDurationInBlocks,
+} from "@constants/ethers";
 import type { Signer } from "ethers";
 import type { Lottery } from "../typechain";
 
@@ -50,9 +54,9 @@ export const getStoreProps = async () => {
 
   const winners = await Promise.all(
     rounds.map((roundStartingBlock, roundIndex) =>
-      currentRoundStartingBlock === roundStartingBlock
-        ? null
-        : contractNoSigner.getWinner(roundIndex)
+      blockNumber >= roundStartingBlock + roundDurationInBlocks - 1
+        ? contractNoSigner.getWinner(roundIndex)
+        : null
     )
   );
 
