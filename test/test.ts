@@ -1,7 +1,9 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, waffle } from "hardhat";
 import type { Signer } from "ethers";
 import type { Lottery } from "../typechain";
+
+const provider = waffle.provider;
 
 describe("Lottery", function () {
   let lottery: Lottery;
@@ -43,11 +45,7 @@ describe("Lottery", function () {
   });
 
   it("Should have winners", async function () {
-    const rounds = await lottery.getRounds();
-    const winners = [
-      await lottery.getWinner(rounds[0]),
-      await lottery.getWinner(rounds[1]),
-    ];
+    const winners = [await lottery.getWinner(0), await lottery.getWinner(1)];
     let firstWinnerFound = false;
     let secondWinnerFound = false;
     for (const signer of signers) {
@@ -60,5 +58,22 @@ describe("Lottery", function () {
     }
     expect(firstWinnerFound).to.be.true;
     expect(secondWinnerFound).to.be.true;
+  });
+
+  it("Should have withdrawable payouts", async function () {
+    const winner = await lottery.getWinner(0);
+    const winnerBalanceBeforePayoutWithdrawal = await provider.getBalance(
+      winner
+    );
+    const tx = await lottery.connect(signers[0]).withdrawPayout(0);
+    await tx.wait();
+    const payouts = await lottery.getPayouts();
+    expect(payouts[0]).to.equal(ethers.utils.parseEther("0"));
+    const winnerBalanceAfterPayoutWithdrawal = await provider.getBalance(
+      winner
+    );
+    expect(winnerBalanceAfterPayoutWithdrawal).to.be.equal(
+      winnerBalanceBeforePayoutWithdrawal.add(ethers.utils.parseEther("7.0"))
+    );
   });
 });

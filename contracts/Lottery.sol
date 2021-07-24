@@ -72,8 +72,10 @@ contract Lottery {
         external
         onlyFinishedRound(roundIndex)
     {
+        uint256 payout = payouts[roundIndex];
+        require(payout > 0, "Payout has already been withdrawn for this round");
         address payable winner = payable(getWinner(roundIndex));
         payouts[roundIndex] = 0;
-        winner.transfer(payouts[roundIndex]);
+        winner.transfer(payout);
     }
 }
