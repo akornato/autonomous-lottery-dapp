@@ -1,18 +1,10 @@
 # Autonomous Lottery Dapp
 
-Managerless lottery whose rounds are determined by Ethereum block numbers modulo 10.
-
-## Motivation
-
-Lottery dapps usually require a manager to trigger a transaction that selects a winner randomly, to be stored in contract state. This lottery winners are instead determined by the hash of the player addresses. This can of course be manipulated by miners.
+Managerless lottery whose rounds are determined by Ethereum block numbers modulo 10. The lottery winners are determined by the hash of the player addresses and need not be stored in contract state. **This can be manipulated by the miners and so this project is not intended for the mainnet.**
 
 ## Hardhat
 
 [Hardhat](https://hardhat.org/) Network is used to run and debug Solidity locally, along with [Typechain](https://github.com/ethereum-ts/TypeChain) to provide TypeScript bindings for Ethereum smart contracts.
-
-## Ethers.js
-
-Both Hardhat scripts and frontend code use [Ethers](https://docs.ethers.io/) to interact with the blockchain.
 
 ## Solidity
 
@@ -21,7 +13,13 @@ Patterns applied:
 - [Checks Effects Interactions](https://fravoll.github.io/solidity-patterns/checks_effects_interactions.html) - `withdrawPayout`
 - [Pull over Push](https://github.com/fravoll/solidity-patterns/blob/master/docs/pull_over_push.md) - `withdrawPayout`
 
-External/public contract functions are covered by [Mocha](https://mochajs.org/) tests.
+## Ethers.js
+
+[Ethers](https://docs.ethers.io/) library is used to interact with the blockchain.
+
+## Waffle
+
+External & public contract functions are covered by [Waffle](https://ethereum-waffle.readthedocs.io) tests.
 
 ## Next.js
 
