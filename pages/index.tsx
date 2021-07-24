@@ -107,6 +107,10 @@ const HomePage: NextPage = () => {
           <Table.Column
             title="Round starting block"
             dataIndex="roundStartingBlock"
+            // @ts-ignore
+            sorter={(a, b) => a.roundStartingBlock - b.roundStartingBlock}
+            defaultSortOrder="descend"
+            sortDirections={[]}
           />
           <Table.Column
             title={
