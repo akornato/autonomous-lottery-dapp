@@ -91,6 +91,7 @@ const HomePage: NextPage = () => {
         </div>
         <Table
           className="pt-5"
+          pagination={{ defaultPageSize: 3 }}
           dataSource={rounds.map((roundStartingBlock, roundIndex) => ({
             key: roundStartingBlock,
             roundStartingBlock,
