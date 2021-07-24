@@ -74,8 +74,8 @@ const HomePage: NextPage = () => {
             Current block number: {blockNumber} | Contract lottery address:{" "}
             {contract.address}
           </div>
-          {blockNumber ===
-            currentRoundStartingBlock + roundDurationInBlocks - 1 && (
+          {blockNumber >=
+            rounds[rounds.length - 1] + roundDurationInBlocks - 1 && (
             <Button onClick={enterCurrentRound}>Start new round</Button>
           )}
         </div>
