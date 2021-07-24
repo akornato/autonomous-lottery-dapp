@@ -4,7 +4,7 @@ Managerless lottery whose rounds are determined by Ethereum block numbers modulo
 
 ## Motivation
 
-Lottery dapps usually require a manager to trigger a transaction that selects a winner randomly, to be stored in contract state. This lottery winners are instead determined by the hash of the first block after the last block of a given round, and need not be stored. The limitation of the approach is [blockhash (uint blockNumber)](https://docs.soliditylang.org/en/v0.8.6/units-and-global-variables.html#block-and-transaction-properties) which works only for the 256 most recent blocks.
+Lottery dapps usually require a manager to trigger a transaction that selects a winner randomly, to be stored in contract state. This lottery winners are instead determined by the hash of the player addresses. This can of course be manipulated by miners.
 
 ## Hardhat
 

@@ -57,11 +57,14 @@ contract Lottery {
         onlyFinishedRound(roundIndex)
         returns (address)
     {
-        uint256 roundStartingBlock = rounds[roundIndex];
-        uint256 pseudoRandom = uint256(
-            blockhash(roundStartingBlock + roundDurationInBlocks)
-        );
-        uint256 winnerIndex = pseudoRandom % players[roundIndex].length;
+        bytes32 pseudoRandom;
+        for (uint256 i = 0; i < players[roundIndex].length; i++) {
+            pseudoRandom = keccak256(
+                abi.encodePacked(players[roundIndex], pseudoRandom)
+            );
+        }
+        uint256 winnerIndex = uint256(pseudoRandom) %
+            players[roundIndex].length;
         return players[roundIndex][winnerIndex];
     }
 

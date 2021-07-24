@@ -85,7 +85,14 @@ const HomePage: NextPage = () => {
             key: roundStartingBlock,
             roundStartingBlock,
             players: players[roundIndex].map((player, playerIndex) => (
-              <div key={`${player}${playerIndex}`}>{player}</div>
+              <div
+                key={`${player}${playerIndex}`}
+                className={
+                  winners[roundIndex] === player ? "text-blue-500" : ""
+                }
+              >
+                {player}
+              </div>
             )),
             payout: payouts[roundIndex],
             winner: winners[roundIndex] ? (
@@ -101,9 +108,16 @@ const HomePage: NextPage = () => {
             title="Round starting block"
             dataIndex="roundStartingBlock"
           />
-          <Table.Column title="Players" dataIndex="players" />
+          <Table.Column
+            title={
+              <div>
+                Players & <span className="text-blue-500">Winners</span>
+              </div>
+            }
+            dataIndex="players"
+          />
           <Table.Column title="Payout" dataIndex="payout" />
-          <Table.Column title="Winner" dataIndex="winner" />
+          <Table.Column dataIndex="winner" />
         </Table>
         {error && (
           <div className="flex justify-center pb-5 text-xs text-red-500">
