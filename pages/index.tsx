@@ -1,9 +1,16 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
 import { ethers } from "ethers";
-import { Table, Button } from "antd";
+import { Table, Button, notification } from "antd";
 import { useStore } from "@hooks/useStore";
 import { roundDurationInBlocks } from "@constants/ethers";
+
+const openNotification = (description) => {
+  notification.open({
+    message: "Error",
+    description,
+  });
+};
 
 const HomePage: NextPage = () => {
   const {
@@ -14,8 +21,6 @@ const HomePage: NextPage = () => {
     payouts,
     winners,
     updateStoreProps,
-    error,
-    setError,
     connectWallet,
     signer,
     signerAddress,
@@ -24,7 +29,6 @@ const HomePage: NextPage = () => {
   } = useStore();
 
   const enterCurrentRound = useCallback(async () => {
-    setError(null);
     updateStoreProps();
     try {
       const tx = await contract.enterCurrentRound({
@@ -32,23 +36,28 @@ const HomePage: NextPage = () => {
       });
       await tx.wait();
     } catch (e) {
-      setError(e);
+      notification.open({
+        message: "Error",
+        description: e.message,
+      });
     }
     updateStoreProps();
-  }, [contract, setError, updateStoreProps]);
+  }, [contract, updateStoreProps]);
 
   const withdrawPayout = useCallback(
     async (roundIndex: number) => {
-      setError(null);
       try {
         const tx = await contract.withdrawPayout(roundIndex);
         await tx.wait();
       } catch (e) {
-        setError(e);
+        notification.open({
+          message: "Error",
+          description: e.message,
+        });
       }
       updateStoreProps();
     },
-    [contract, setError, updateStoreProps]
+    [contract, updateStoreProps]
   );
 
   return (
@@ -71,7 +80,8 @@ const HomePage: NextPage = () => {
       <div className="fixed bottom-0 w-screen px-10 pt-3 overflow-auto top-12">
         <div className="flex justify-between">
           <div className="px-4">
-            Current block number: {blockNumber} | Contract lottery address:{" "}
+            Current block: {blockNumber} | Current round starting block:{" "}
+            {currentRoundStartingBlock} | Contract lottery address:{" "}
             {contract.address}
           </div>
           {blockNumber >=
@@ -123,11 +133,6 @@ const HomePage: NextPage = () => {
           <Table.Column title="Payout" dataIndex="payout" />
           <Table.Column dataIndex="winner" />
         </Table>
-        {error && (
-          <div className="flex justify-center pb-5 text-xs text-red-500">
-            {error.message}
-          </div>
-        )}
       </div>
     </>
   );

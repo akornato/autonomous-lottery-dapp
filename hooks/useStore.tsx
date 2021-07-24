@@ -5,6 +5,7 @@ import React, {
   createContext,
   useCallback,
 } from "react";
+import { notification } from "antd";
 import { ethers } from "ethers";
 import {
   provider,
@@ -25,8 +26,6 @@ export type StoreProps = {
 
 type StoreValue = StoreProps & {
   updateStoreProps: () => void;
-  error?: Error;
-  setError: (Error) => void;
   connectWallet: () => void;
   signer?: Signer;
   signerAddress?: string;
@@ -79,14 +78,12 @@ export const StoreProvider: React.FC<StoreProps> = ({
     () => getStoreProps().then(setStoreProps),
     []
   );
-  const [error, setError] = useState<Error>();
   const [contract, setContract] = useState(contractNoSigner);
   const [signer, setSigner] = useState<Signer>();
   const [signerAddress, setSignerAddress] = useState<string>();
   const [signerBalance, setSignerBalance] = useState<string>();
 
   const connectWallet = async () => {
-    setError(null);
     try {
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
@@ -97,7 +94,10 @@ export const StoreProvider: React.FC<StoreProps> = ({
       );
       setContract(contract.connect(signer));
     } catch (e) {
-      setError(e);
+      notification.open({
+        message: "Error",
+        description: e.message,
+      });
     }
   };
 
@@ -110,8 +110,6 @@ export const StoreProvider: React.FC<StoreProps> = ({
       value={{
         ...storeProps,
         updateStoreProps,
-        error,
-        setError,
         connectWallet,
         signer,
         signerAddress,
