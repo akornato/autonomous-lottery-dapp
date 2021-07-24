@@ -1,6 +1,6 @@
 # Autonomous Lottery Dapp
 
-Managerless lottery whose rounds are determined by Ethereum block numbers modulo 10. The lottery winners are determined by the hash of the player addresses and need not be stored in contract state. **This can be manipulated by the miners and so this project is not intended for the mainnet.**
+Managerless lottery whose rounds are determined by Ethereum block numbers modulo 10. The lottery winners are determined by the hash of the player addresses and need not be stored in contract state. **This can be manipulated by the miners and so this project is not yet ready for the mainnet.**
 
 ## Hardhat
 
