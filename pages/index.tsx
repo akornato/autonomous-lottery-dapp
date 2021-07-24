@@ -106,9 +106,13 @@ const HomePage: NextPage = () => {
             )),
             payout: payouts[roundIndex],
             winner: winners[roundIndex] ? (
-              <Button onClick={() => withdrawPayout(roundIndex)}>
-                Withdraw payout
-              </Button>
+              payouts[roundIndex] !== "0.0" ? (
+                <Button onClick={() => withdrawPayout(roundIndex)}>
+                  Withdraw payout
+                </Button>
+              ) : (
+                "Payout withdrawn"
+              )
             ) : (
               <Button onClick={enterCurrentRound}>Enter round</Button>
             ),
