@@ -1,6 +1,6 @@
 # Autonomous Lottery Dapp
 
-Managerless lottery whose rounds are determined by Ethereum block numbers modulo 10. The lottery winners are determined by the hash of the player addresses and need not be stored in contract state. **This can be manipulated by the miners so this project is not yet ready for the mainnet.**
+Autonomous lottery whose rounds are determined by Ethereum block numbers modulo 10. Winners are determined by hashing player addresses and need not be stored in contract state. **This can be manipulated by miners so the project is not ready for mainnet yet.**
 
 ## Hardhat
 
@@ -27,7 +27,7 @@ External & public contract functions are covered by [Waffle](https://ethereum-wa
 
 ## React
 
-The client uses context provider with React Hooks pattern for global state management, initialized (hydrated) from SSR.
+Frontend uses context provider with React Hooks pattern for global state management, initialized (hydrated) from SSR.
 
 ## Styling
 
