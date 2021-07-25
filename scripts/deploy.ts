@@ -23,21 +23,23 @@ async function main() {
   await lottery.deployed();
   console.log("Lottery deployed to:", lottery.address);
 
-  const signers = await ethers.getSigners();
-
-  console.log("Send 100 ethers to Metamask address");
-  const tx = await signers[0].sendTransaction({
-    to: METAMASK_ADDRESS,
-    value: ethers.utils.parseEther("100"),
-  });
-  await tx.wait();
-
-  for (const signer of signers) {
-    console.log(`Make ${await signer.getAddress()} enter current round`);
-    const tx = await lottery.connect(signer).enterCurrentRound({
+  if (hre.network.name === "hardhat") {
+    const signers = await ethers.getSigners();
+    
+    console.log("Send 1 ether to Metamask address");
+    const tx = await signers[0].sendTransaction({
+      to: METAMASK_ADDRESS,
       value: ethers.utils.parseEther("1.0"),
     });
     await tx.wait();
+
+    for (const signer of signers) {
+      console.log(`${await signer.getAddress()} enters lottery`);
+      const tx = await lottery.connect(signer).enterCurrentRound({
+        value: ethers.utils.parseEther("1.0"),
+      });
+      await tx.wait();
+    }
   }
 }
 
