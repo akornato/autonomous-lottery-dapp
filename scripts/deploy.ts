@@ -21,6 +21,7 @@ async function main() {
   let lottery = await Lottery.deploy();
 
   await lottery.deployed();
+  console.log("Lottery deployed to:", lottery.address);
 
   if (hre.network.name === "localhost") {
     const signers = await ethers.getSigners();
