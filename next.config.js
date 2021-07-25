@@ -2,6 +2,7 @@ const createWebpackAliases = require("./webpack.aliases");
 
 const { NODE_ENV, CONTRACT_ADDRESS_HARDHAT, CONTRACT_ADDRESS_RINKEBY } =
   process.env;
+const isDevelopment = NODE_ENV === "development";
 
 module.exports = {
   webpack: (config, { dev }) => {
@@ -10,7 +11,8 @@ module.exports = {
   },
   publicRuntimeConfig: {
     NODE_ENV,
-    CONTRACT_ADDRESS_HARDHAT,
-    CONTRACT_ADDRESS_RINKEBY,
+    CONTRACT_ADDRESS: isDevelopment
+      ? CONTRACT_ADDRESS_HARDHAT
+      : CONTRACT_ADDRESS_RINKEBY,
   },
 };

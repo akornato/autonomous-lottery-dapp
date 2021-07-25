@@ -12,8 +12,9 @@ contract Lottery {
 
     modifier onlyFinishedRound(uint256 roundIndex) {
         uint256 roundStartingBlock = rounds[roundIndex];
+        uint256 currentRoundStartingBlock = getCurrentRoundStartingBlock();
         require(
-            block.number >= roundStartingBlock + roundDurationInBlocks - 1,
+            roundStartingBlock < currentRoundStartingBlock,
             "Round not finished yet"
         );
         _;
@@ -35,7 +36,7 @@ contract Lottery {
         }
     }
 
-    function getCurrentRoundStartingBlock() public view returns (uint256) {
+    function getCurrentRoundStartingBlock() internal view returns (uint256) {
         return (block.number / roundDurationInBlocks) * roundDurationInBlocks;
     }
 
@@ -54,7 +55,6 @@ contract Lottery {
     function getWinner(uint256 roundIndex)
         public
         view
-        onlyFinishedRound(roundIndex)
         returns (address)
     {
         bytes32 pseudoRandom;

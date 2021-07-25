@@ -15,13 +15,6 @@ describe("Lottery", function () {
     await lottery.deployed();
   });
 
-  it("Should have correct round starting block", async function () {
-    const roundStartingBlock = await lottery
-      .getCurrentRoundStartingBlock()
-      .then((bigNumber) => bigNumber.toNumber());
-    expect(roundStartingBlock).to.equal(0);
-  });
-
   it("Should revert enterCurrentRound if value less than 0.01 ether", async function () {
     signers = await ethers.getSigners();
     await expect(

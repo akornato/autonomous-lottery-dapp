@@ -21,11 +21,10 @@ async function main() {
   let lottery = await Lottery.deploy();
 
   await lottery.deployed();
-  console.log("Lottery deployed to:", lottery.address);
 
-  if (hre.network.name === "hardhat") {
+  if (hre.network.name === "localhost") {
     const signers = await ethers.getSigners();
-    
+
     console.log("Send 1 ether to Metamask address");
     const tx = await signers[0].sendTransaction({
       to: METAMASK_ADDRESS,
@@ -36,7 +35,7 @@ async function main() {
     for (const signer of signers) {
       console.log(`${await signer.getAddress()} enters lottery`);
       const tx = await lottery.connect(signer).enterCurrentRound({
-        value: ethers.utils.parseEther("1.0"),
+        value: ethers.utils.parseEther(".01"),
       });
       await tx.wait();
     }

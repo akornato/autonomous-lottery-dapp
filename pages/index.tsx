@@ -1,12 +1,8 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
-import getConfig from "next/config";
 import { ethers } from "ethers";
 import { Table, Button, notification } from "antd";
 import { useStore } from "@hooks/useStore";
-import { roundDurationInBlocks } from "@constants/ethers";
-
-const { CONTRACT_ADDRESS_RINKEBY } = getConfig().publicRuntimeConfig;
 
 const HomePage: NextPage = () => {
   const {
@@ -28,7 +24,7 @@ const HomePage: NextPage = () => {
     updateStoreProps();
     try {
       const tx = await contract.enterCurrentRound({
-        value: ethers.utils.parseEther("1.0"),
+        value: ethers.utils.parseEther(".01"),
       });
       await tx.wait();
     } catch (e) {
@@ -86,8 +82,7 @@ const HomePage: NextPage = () => {
               Etherscan
             </a>
           </div>
-          {blockNumber >=
-            rounds[rounds.length - 1] + roundDurationInBlocks - 1 && (
+          {rounds[rounds.length - 1] !== currentRoundStartingBlock && (
             <Button onClick={enterCurrentRound}>Start new round</Button>
           )}
         </div>

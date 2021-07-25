@@ -36,24 +36,22 @@ type StoreValue = StoreProps & {
 const StoreContext = createContext<StoreValue>(undefined!);
 
 export const getStoreProps = async () => {
-  const [blockNumber, currentRoundStartingBlock, rounds, players, payouts] =
-    await Promise.all([
-      provider.getBlockNumber(),
-      contractNoSigner
-        .getCurrentRoundStartingBlock()
-        .then((bigNumber) => bigNumber.toNumber()),
-      contractNoSigner
-        .getRounds()
-        .then((array) => array.map((bigNumber) => bigNumber.toNumber())),
-      contractNoSigner.getPlayers(),
-      contractNoSigner
-        .getPayouts()
-        .then((array) => array.map(ethers.utils.formatEther)),
-    ]);
+  const [blockNumber, rounds, players, payouts] = await Promise.all([
+    provider.getBlockNumber(),
+    contractNoSigner
+      .getRounds()
+      .then((array) => array.map((bigNumber) => bigNumber.toNumber())),
+    contractNoSigner.getPlayers(),
+    contractNoSigner
+      .getPayouts()
+      .then((array) => array.map(ethers.utils.formatEther)),
+  ]);
+
+  const currentRoundStartingBlock = Math.floor((blockNumber + 1) / 10) * 10;
 
   const winners = await Promise.all(
     rounds.map((roundStartingBlock, roundIndex) =>
-      blockNumber >= roundStartingBlock + roundDurationInBlocks - 1
+      roundStartingBlock < currentRoundStartingBlock
         ? contractNoSigner.getWinner(roundIndex)
         : null
     )

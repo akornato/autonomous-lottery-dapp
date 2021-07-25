@@ -23,7 +23,6 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface LotteryInterface extends ethers.utils.Interface {
   functions: {
     "enterCurrentRound()": FunctionFragment;
-    "getCurrentRoundStartingBlock()": FunctionFragment;
     "getPayouts()": FunctionFragment;
     "getPlayers()": FunctionFragment;
     "getRounds()": FunctionFragment;
@@ -37,10 +36,6 @@ interface LotteryInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "enterCurrentRound",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getCurrentRoundStartingBlock",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -79,10 +74,6 @@ interface LotteryInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(
     functionFragment: "enterCurrentRound",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getCurrentRoundStartingBlock",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getPayouts", data: BytesLike): Result;
@@ -152,10 +143,6 @@ export class Lottery extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    getCurrentRoundStartingBlock(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     getPayouts(overrides?: CallOverrides): Promise<[BigNumber[]]>;
 
     getPlayers(overrides?: CallOverrides): Promise<[string[][]]>;
@@ -192,8 +179,6 @@ export class Lottery extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getCurrentRoundStartingBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
   getPayouts(overrides?: CallOverrides): Promise<BigNumber[]>;
 
   getPlayers(overrides?: CallOverrides): Promise<string[][]>;
@@ -224,8 +209,6 @@ export class Lottery extends BaseContract {
 
   callStatic: {
     enterCurrentRound(overrides?: CallOverrides): Promise<void>;
-
-    getCurrentRoundStartingBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     getPayouts(overrides?: CallOverrides): Promise<BigNumber[]>;
 
@@ -263,8 +246,6 @@ export class Lottery extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    getCurrentRoundStartingBlock(overrides?: CallOverrides): Promise<BigNumber>;
-
     getPayouts(overrides?: CallOverrides): Promise<BigNumber>;
 
     getPlayers(overrides?: CallOverrides): Promise<BigNumber>;
@@ -297,10 +278,6 @@ export class Lottery extends BaseContract {
   populateTransaction: {
     enterCurrentRound(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getCurrentRoundStartingBlock(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getPayouts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
