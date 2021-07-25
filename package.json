@@ -12,7 +12,7 @@
     "deploy:rinkeby": "hardhat run --network rinkeby scripts/deploy.ts",
     "verify": "hardhat verify --network rinkeby",
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run compile && next build",
     "start": "next start",
     "lint": "next lint"
   },
