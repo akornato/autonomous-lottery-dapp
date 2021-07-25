@@ -1,6 +1,6 @@
 # Autonomous Lottery Dapp
 
-Autonomous lottery whose rounds are determined by Ethereum block numbers modulo 10. Winners are determined by hashing player addresses and need not be stored in contract state. **This can be manipulated by miners so the project is not ready for mainnet yet.**
+Autonomous lottery whose rounds are determined by Ethereum block numbers modulo 10. Winners are determined by hashing player addresses and need not be stored in contract state. **This can be manipulated by miners so the project is not ready for mainnet yet.** Rinkeby testnet deploy: https://autonomous-lottery-dapp.vercel.app
 
 ## Hardhat
 
