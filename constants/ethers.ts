@@ -1,8 +1,10 @@
 import { ethers } from "ethers";
+import getConfig from "next/config";
 import artifact from "../artifacts/contracts/Lottery.sol/Lottery.json";
 import type { Lottery } from "../typechain";
 
-const { NODE_ENV } = process.env;
+const { NODE_ENV, CONTRACT_ADDRESS_HARDHAT, CONTRACT_ADDRESS_RINKEBY } =
+  getConfig().publicRuntimeConfig;
 const isDevelopment = NODE_ENV === "development";
 declare global {
   interface Window {
@@ -20,7 +22,7 @@ export const provider =
       );
 
 export const contractNoSigner = new ethers.Contract(
-  "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  isDevelopment ? CONTRACT_ADDRESS_HARDHAT : CONTRACT_ADDRESS_RINKEBY,
   artifact.abi,
   provider
 ) as Lottery;

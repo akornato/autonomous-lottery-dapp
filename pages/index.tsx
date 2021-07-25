@@ -1,16 +1,12 @@
 import React, { useCallback } from "react";
 import { NextPage } from "next";
+import getConfig from "next/config";
 import { ethers } from "ethers";
 import { Table, Button, notification } from "antd";
 import { useStore } from "@hooks/useStore";
 import { roundDurationInBlocks } from "@constants/ethers";
 
-const openNotification = (description) => {
-  notification.open({
-    message: "Error",
-    description,
-  });
-};
+const { CONTRACT_ADDRESS_RINKEBY } = getConfig().publicRuntimeConfig;
 
 const HomePage: NextPage = () => {
   const {
@@ -81,8 +77,14 @@ const HomePage: NextPage = () => {
         <div className="flex justify-between">
           <div className="px-4">
             Current block: {blockNumber} | Current round starting block:{" "}
-            {currentRoundStartingBlock} | Contract lottery address:{" "}
-            {contract.address}
+            {currentRoundStartingBlock} |{" "}
+            <a
+              href={`https://rinkeby.etherscan.io/address/${contract.address}#code`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Etherscan
+            </a>
           </div>
           {blockNumber >=
             rounds[rounds.length - 1] + roundDurationInBlocks - 1 && (
