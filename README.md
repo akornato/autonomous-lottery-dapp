@@ -39,3 +39,11 @@ Frontend uses context provider with React Hooks pattern for global store, initia
 ## TypeScript
 
 All code across Next.js, React, Hardhat scripts and tests is statically typed with TypeScript.
+
+## Local dev
+
+1. `npm i`
+2. `npm run node` starts Hardhat Network
+3. `npm run deploy` deploys the Lottery contract & makes some transactions for testing
+4. `npm run dev` starts Next.js
+5. Install [Metamask](https://metamask.io/)
