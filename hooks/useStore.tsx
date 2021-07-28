@@ -82,14 +82,16 @@ export const StoreProvider: React.FC<StoreProps> = ({
 
   const connectWallet = async () => {
     try {
-      await provider.send("eth_requestAccounts", []);
-      const signer = provider.getSigner();
-      setSigner(signer);
-      setSignerAddress(await signer.getAddress());
-      setSignerBalance(
-        await signer.getBalance().then(ethers.utils.formatEther)
-      );
-      setContract(contract.connect(signer));
+      if (provider) {
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        setSigner(signer);
+        setSignerAddress(await signer.getAddress());
+        setSignerBalance(
+          await signer.getBalance().then(ethers.utils.formatEther)
+        );
+        setContract(contract.connect(signer));
+      } else throw { message: "Install MetaMask" };
     } catch (e) {
       notification.open({
         message: "Error",
@@ -99,22 +101,23 @@ export const StoreProvider: React.FC<StoreProps> = ({
   };
 
   useEffect(() => {
-    connectWallet();
-    contract.on("NewPlayer", (roundStartingBlock, player, value) => {
-      notification.open({
-        message: "New Player",
-        description: `Round starting block: ${roundStartingBlock} | Player: ${player} | Value: ${value}`,
+    if (provider) {
+      contract.on("NewPlayer", (roundStartingBlock, player, value) => {
+        notification.open({
+          message: "New Player",
+          description: `Round starting block: ${roundStartingBlock} | Player: ${player} | Value: ${value}`,
+        });
+        updateStoreProps();
       });
-      updateStoreProps();
-    });
-    contract.on("Withdrawal", (roundStartingBlock, winner, value) => {
-      notification.open({
-        message: "Withdrawal",
-        description: `Round starting block: ${roundStartingBlock} | Winner: ${winner} | Value: ${value}`,
+      contract.on("Withdrawal", (roundStartingBlock, winner, value) => {
+        notification.open({
+          message: "Withdrawal",
+          description: `Round starting block: ${roundStartingBlock} | Winner: ${winner} | Value: ${value}`,
+        });
+        updateStoreProps();
       });
-      updateStoreProps();
-    });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }
+  }, [provider]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <StoreContext.Provider
