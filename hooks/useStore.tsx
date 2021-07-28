@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { notification } from "antd";
 import { ethers } from "ethers";
-import { getProvider, getContractNoSigner } from "@constants/ethers";
+import { getProvider, getContractNoSigner } from "@utils/ethers";
 import type { Signer } from "ethers";
 import type { Lottery } from "../typechain";
 
