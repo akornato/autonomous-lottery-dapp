@@ -35,5 +35,3 @@ export const contractNoSigner = new ethers.Contract(
   artifact.abi,
   provider
 ) as Lottery;
-
-export const roundDurationInBlocks = 10;
