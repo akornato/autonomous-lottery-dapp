@@ -10,8 +10,9 @@ Autonomous lottery whose rounds are determined by Ethereum block numbers modulo 
 
 Patterns applied:
 
-- [Checks Effects Interactions](https://fravoll.github.io/solidity-patterns/checks_effects_interactions.html) - `withdrawPayout`
-- [Pull over Push](https://github.com/fravoll/solidity-patterns/blob/master/docs/pull_over_push.md) - `withdrawPayout`
+- [Checks Effects Interactions](https://fravoll.github.io/solidity-patterns/checks_effects_interactions.html)
+- [Pull over Push](https://github.com/fravoll/solidity-patterns/blob/master/docs/pull_over_push.md)
+- [Guard Check](https://github.com/fravoll/solidity-patterns/blob/master/docs/guard_check.md)
 
 ## Ethers.js
 

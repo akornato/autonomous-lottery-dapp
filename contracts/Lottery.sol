@@ -61,7 +61,9 @@ contract Lottery {
         require(payout > 0, "Payout has already been withdrawn for this round");
         address payable winner = payable(getWinner(roundIndex));
         payouts[roundIndex] = 0;
+        uint256 balanceBeforeTransfer = address(this).balance;
         winner.transfer(payout);
+        assert(address(this).balance == balanceBeforeTransfer - payout);
         emit Withdrawal(rounds[rounds.length - 1], winner, payout);
     }
 
