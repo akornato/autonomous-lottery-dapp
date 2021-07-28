@@ -87,6 +87,7 @@ export const StoreProvider: React.FC<StoreProps> = ({
           await signer.getBalance().then(ethers.utils.formatEther)
         );
         setContract(contract.connect(signer));
+        window.ethereum.on("accountsChanged", connectWallet);
       } else throw { message: "Install MetaMask" };
     } catch (e) {
       notification.open({

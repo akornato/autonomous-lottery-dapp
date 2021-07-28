@@ -11,7 +11,9 @@ declare global {
   }
 }
 
-let isomorphicProvider;
+let isomorphicProvider:
+  | ethers.providers.Web3Provider
+  | ethers.providers.JsonRpcProvider;
 
 if (typeof window !== "undefined" && window.ethereum) {
   isomorphicProvider = new ethers.providers.Web3Provider(window.ethereum);
