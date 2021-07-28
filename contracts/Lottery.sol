@@ -36,10 +36,6 @@ contract Lottery {
         }
     }
 
-    function getCurrentRoundStartingBlock() internal view returns (uint256) {
-        return (block.number / roundDurationInBlocks) * roundDurationInBlocks;
-    }
-
     function getRounds() external view returns (uint256[] memory) {
         return rounds;
     }
@@ -52,11 +48,18 @@ contract Lottery {
         return payouts;
     }
 
-    function getWinner(uint256 roundIndex)
-        public
-        view
-        returns (address)
+    function withdrawPayout(uint256 roundIndex)
+        external
+        onlyFinishedRound(roundIndex)
     {
+        uint256 payout = payouts[roundIndex];
+        require(payout > 0, "Payout has already been withdrawn for this round");
+        address payable winner = payable(getWinner(roundIndex));
+        payouts[roundIndex] = 0;
+        winner.transfer(payout);
+    }
+
+    function getWinner(uint256 roundIndex) public view returns (address) {
         bytes32 pseudoRandom;
         for (uint256 i = 0; i < players[roundIndex].length; i++) {
             pseudoRandom = keccak256(
@@ -68,14 +71,7 @@ contract Lottery {
         return players[roundIndex][winnerIndex];
     }
 
-    function withdrawPayout(uint256 roundIndex)
-        external
-        onlyFinishedRound(roundIndex)
-    {
-        uint256 payout = payouts[roundIndex];
-        require(payout > 0, "Payout has already been withdrawn for this round");
-        address payable winner = payable(getWinner(roundIndex));
-        payouts[roundIndex] = 0;
-        winner.transfer(payout);
+    function getCurrentRoundStartingBlock() internal view returns (uint256) {
+        return (block.number / roundDurationInBlocks) * roundDurationInBlocks;
     }
 }
