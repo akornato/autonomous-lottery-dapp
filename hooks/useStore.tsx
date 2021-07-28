@@ -101,6 +101,7 @@ export const StoreProvider: React.FC<StoreProps> = ({
     if (provider) {
       contract.on("NewPlayer", (roundStartingBlock, player, value) => {
         notification.open({
+          key: Math.random().toString(),
           message: "New Player",
           description: `Round starting block: ${roundStartingBlock} | Player: ${player} | Value: ${value}`,
         });
@@ -108,6 +109,7 @@ export const StoreProvider: React.FC<StoreProps> = ({
       });
       contract.on("Withdrawal", (roundStartingBlock, winner, value) => {
         notification.open({
+          key: Math.random().toString(),
           message: "Withdrawal",
           description: `Round starting block: ${roundStartingBlock} | Winner: ${winner} | Value: ${value}`,
         });
