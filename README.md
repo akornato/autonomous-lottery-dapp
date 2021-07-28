@@ -1,6 +1,8 @@
 # Autonomous Lottery Dapp
 
-Autonomous lottery whose rounds are determined by Ethereum block numbers modulo 10. Winners are determined by hashing player addresses and need not be stored in contract state. **This can be manipulated by miners so the project is not ready for mainnet yet.** Rinkeby testnet deploy: https://autonomous-lottery-dapp.vercel.app
+Autonomous lottery whose rounds are determined by Ethereum block numbers modulo 10. Winners are determined by hashing player addresses and need not be stored in contract state. **This can be manipulated by miners so the project is not ready for mainnet yet.**
+
+Rinkeby testnet deploy: https://autonomous-lottery-dapp.vercel.app
 
 ## Hardhat
 
@@ -28,7 +30,7 @@ External & public contract functions are covered by [Waffle](https://ethereum-wa
 
 ## React
 
-Frontend uses context provider with React Hooks pattern for global state management, initialized (hydrated) from SSR.
+Frontend uses context provider with React Hooks pattern for global store, initialized (hydrated) from SSR, and then updated on contract events.
 
 ## Styling
 
