@@ -78,9 +78,10 @@ const HomePage: NextPage = () => {
               Etherscan
             </a>
           </div>
-          {rounds[rounds.length - 1] !== currentRoundStartingBlock && (
-            <Button onClick={enterCurrentRound}>Start new round</Button>
-          )}
+          {signer &&
+            rounds[rounds.length - 1] !== currentRoundStartingBlock && (
+              <Button onClick={enterCurrentRound}>Start new round</Button>
+            )}
         </div>
         <Table
           className="pt-5"
@@ -99,17 +100,19 @@ const HomePage: NextPage = () => {
               </div>
             )),
             payout: `${payouts[roundIndex]} ETH`,
-            winner: winners[roundIndex] ? (
-              payouts[roundIndex] !== "0.0" ? (
-                <Button onClick={() => withdrawPayout(roundIndex)}>
-                  Withdraw payout
-                </Button>
+            winner:
+              signer &&
+              (winners[roundIndex] ? (
+                payouts[roundIndex] !== "0.0" ? (
+                  <Button onClick={() => withdrawPayout(roundIndex)}>
+                    Withdraw payout
+                  </Button>
+                ) : (
+                  "Payout withdrawn"
+                )
               ) : (
-                "Payout withdrawn"
-              )
-            ) : (
-              <Button onClick={enterCurrentRound}>Enter round</Button>
-            ),
+                <Button onClick={enterCurrentRound}>Enter round</Button>
+              )),
           }))}
         >
           <Table.Column
