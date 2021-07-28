@@ -7,7 +7,7 @@ const { NODE_ENV, CONTRACT_ADDRESS } = getConfig().publicRuntimeConfig;
 const isDevelopment = NODE_ENV === "development";
 declare global {
   interface Window {
-    ethereum: any;
+    ethereum: ethers.providers.ExternalProvider;
   }
 }
 

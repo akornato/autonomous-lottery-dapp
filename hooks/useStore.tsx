@@ -129,7 +129,9 @@ export const StoreProvider: React.FC<StoreProps> = ({
 
   useEffect(() => {
     if (signer) {
+      // @ts-ignore
       window.ethereum.on("accountsChanged", connectWallet);
+      // @ts-ignore
       window.ethereum.on("chainChanged", connectWallet);
     }
   }, [signer, connectWallet]);
