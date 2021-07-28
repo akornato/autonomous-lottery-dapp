@@ -102,9 +102,11 @@ export const StoreProvider: React.FC<StoreProps> = ({
   const newPlayerListener = useCallback(
     (roundStartingBlock, player, value) => {
       notification.open({
-        key: Math.random().toString(),
+        key: `${roundStartingBlock}|${player}|${value}`,
         message: "New Player",
-        description: `Round starting block: ${roundStartingBlock} | Player: ${player} | Value: ${value}`,
+        description: `Round starting block: ${roundStartingBlock} | Player: ${player} | Value: ${ethers.utils.formatEther(
+          value
+        )} ETH`,
       });
       updateStoreProps();
     },
@@ -114,9 +116,11 @@ export const StoreProvider: React.FC<StoreProps> = ({
   const withdrawalListener = useCallback(
     (roundStartingBlock, winner, value) => {
       notification.open({
-        key: Math.random().toString(),
+        key: `${roundStartingBlock}|${winner}|${value}`,
         message: "Withdrawal",
-        description: `Round starting block: ${roundStartingBlock} | Winner: ${winner} | Value: ${value}`,
+        description: `Round starting block: ${roundStartingBlock} | Winner: ${winner} | Value: ${ethers.utils.formatEther(
+          value
+        )} ETH`,
       });
       updateStoreProps();
     },

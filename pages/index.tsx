@@ -98,7 +98,7 @@ const HomePage: NextPage = () => {
                 {player}
               </div>
             )),
-            payout: payouts[roundIndex],
+            payout: `${payouts[roundIndex]} ETH`,
             winner: winners[roundIndex] ? (
               payouts[roundIndex] !== "0.0" ? (
                 <Button onClick={() => withdrawPayout(roundIndex)}>
