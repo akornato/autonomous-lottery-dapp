@@ -25,7 +25,6 @@ export type StoreProps = {
 };
 
 type StoreValue = StoreProps & {
-  updateStoreProps: () => void;
   connectWallet: () => void;
   signer?: Signer;
   signerAddress?: string;
@@ -101,13 +100,26 @@ export const StoreProvider: React.FC<StoreProps> = ({
 
   useEffect(() => {
     connectWallet();
+    contract.on("NewPlayer", (roundStartingBlock, player, value) => {
+      notification.open({
+        message: "New Player",
+        description: `Round starting block: ${roundStartingBlock} | Player: ${player} | Value: ${value}`,
+      });
+      updateStoreProps();
+    });
+    contract.on("Withdrawal", (roundStartingBlock, winner, value) => {
+      notification.open({
+        message: "Withdrawal",
+        description: `Round starting block: ${roundStartingBlock} | Winner: ${winner} | Value: ${value}`,
+      });
+      updateStoreProps();
+    });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <StoreContext.Provider
       value={{
         ...storeProps,
-        updateStoreProps,
         connectWallet,
         signer,
         signerAddress,

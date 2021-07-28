@@ -10,6 +10,10 @@ contract Lottery {
 
     uint256 public roundDurationInBlocks = 10;
 
+    event NewPlayer(uint256 roundStartingBlock, address player, uint256 value);
+
+    event Withdrawal(uint256 roundStartingBlock, address winner, uint256 value);
+
     modifier onlyFinishedRound(uint256 roundIndex) {
         uint256 roundStartingBlock = rounds[roundIndex];
         uint256 currentRoundStartingBlock = getCurrentRoundStartingBlock();
@@ -34,6 +38,7 @@ contract Lottery {
             players[players.length - 1].push(msg.sender);
             payouts[payouts.length - 1] += msg.value;
         }
+        emit NewPlayer(rounds[rounds.length - 1], msg.sender, msg.value);
     }
 
     function getRounds() external view returns (uint256[] memory) {
@@ -57,6 +62,7 @@ contract Lottery {
         address payable winner = payable(getWinner(roundIndex));
         payouts[roundIndex] = 0;
         winner.transfer(payout);
+        emit Withdrawal(rounds[rounds.length - 1], winner, payout);
     }
 
     function getWinner(uint256 roundIndex) public view returns (address) {

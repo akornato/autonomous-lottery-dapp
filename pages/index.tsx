@@ -12,7 +12,6 @@ const HomePage: NextPage = () => {
     players,
     payouts,
     winners,
-    updateStoreProps,
     connectWallet,
     signer,
     signerAddress,
@@ -21,7 +20,6 @@ const HomePage: NextPage = () => {
   } = useStore();
 
   const enterCurrentRound = useCallback(async () => {
-    updateStoreProps();
     try {
       const tx = await contract.enterCurrentRound({
         value: ethers.utils.parseEther(".01"),
@@ -33,8 +31,7 @@ const HomePage: NextPage = () => {
         description: e.message,
       });
     }
-    updateStoreProps();
-  }, [contract, updateStoreProps]);
+  }, [contract]);
 
   const withdrawPayout = useCallback(
     async (roundIndex: number) => {
@@ -47,9 +44,8 @@ const HomePage: NextPage = () => {
           description: e.message,
         });
       }
-      updateStoreProps();
     },
-    [contract, updateStoreProps]
+    [contract]
   );
 
   return (

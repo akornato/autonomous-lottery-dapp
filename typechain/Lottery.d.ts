@@ -92,7 +92,13 @@ interface LotteryInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
 
-  events: {};
+  events: {
+    "NewPlayer(uint256,address,uint256)": EventFragment;
+    "Withdrawal(uint256,address,uint256)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "NewPlayer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Withdrawal"): EventFragment;
 }
 
 export class Lottery extends BaseContract {
@@ -239,7 +245,25 @@ export class Lottery extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    NewPlayer(
+      roundStartingBlock?: null,
+      player?: null,
+      value?: null
+    ): TypedEventFilter<
+      [BigNumber, string, BigNumber],
+      { roundStartingBlock: BigNumber; player: string; value: BigNumber }
+    >;
+
+    Withdrawal(
+      roundStartingBlock?: null,
+      winner?: null,
+      value?: null
+    ): TypedEventFilter<
+      [BigNumber, string, BigNumber],
+      { roundStartingBlock: BigNumber; winner: string; value: BigNumber }
+    >;
+  };
 
   estimateGas: {
     enterCurrentRound(
