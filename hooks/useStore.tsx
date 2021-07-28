@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { notification } from "antd";
 import { ethers } from "ethers";
-import { provider, contractNoSigner } from "@constants/ethers";
+import { getProvider, getContractNoSigner } from "@constants/ethers";
 import type { Signer } from "ethers";
 import type { Lottery } from "../typechain";
 
@@ -31,6 +31,8 @@ type StoreValue = StoreProps & {
 const StoreContext = createContext<StoreValue>(undefined!);
 
 export const getStoreProps = async () => {
+  const provider = getProvider();
+  const contractNoSigner = getContractNoSigner();
   const [blockNumber, rounds, players, payouts] = await Promise.all([
     provider.getBlockNumber(),
     contractNoSigner
@@ -71,13 +73,14 @@ export const StoreProvider: React.FC<StoreProps> = ({
     () => getStoreProps().then(setStoreProps),
     []
   );
-  const [contract, setContract] = useState(contractNoSigner);
+  const [contract, setContract] = useState(getContractNoSigner());
   const [signer, setSigner] = useState<Signer>();
   const [signerAddress, setSignerAddress] = useState<string>();
   const [signerBalance, setSignerBalance] = useState<string>();
 
-  const connectWallet = async () => {
+  const connectWallet = useCallback(async () => {
     try {
+      const provider = getProvider();
       if (provider) {
         await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
@@ -86,8 +89,7 @@ export const StoreProvider: React.FC<StoreProps> = ({
         setSignerBalance(
           await signer.getBalance().then(ethers.utils.formatEther)
         );
-        setContract(contract.connect(signer));
-        window.ethereum.on("accountsChanged", connectWallet);
+        setContract(getContractNoSigner().connect(signer));
       } else throw { message: "Install MetaMask" };
     } catch (e) {
       notification.open({
@@ -95,28 +97,45 @@ export const StoreProvider: React.FC<StoreProps> = ({
         description: e.message,
       });
     }
-  };
+  }, []);
+
+  const newPlayerListener = useCallback(
+    (roundStartingBlock, player, value) => {
+      notification.open({
+        key: Math.random().toString(),
+        message: "New Player",
+        description: `Round starting block: ${roundStartingBlock} | Player: ${player} | Value: ${value}`,
+      });
+      updateStoreProps();
+    },
+    [updateStoreProps]
+  );
+
+  const withdrawalListener = useCallback(
+    (roundStartingBlock, winner, value) => {
+      notification.open({
+        key: Math.random().toString(),
+        message: "Withdrawal",
+        description: `Round starting block: ${roundStartingBlock} | Winner: ${winner} | Value: ${value}`,
+      });
+      updateStoreProps();
+    },
+    [updateStoreProps]
+  );
 
   useEffect(() => {
-    if (provider) {
-      contract.on("NewPlayer", (roundStartingBlock, player, value) => {
-        notification.open({
-          key: Math.random().toString(),
-          message: "New Player",
-          description: `Round starting block: ${roundStartingBlock} | Player: ${player} | Value: ${value}`,
-        });
-        updateStoreProps();
-      });
-      contract.on("Withdrawal", (roundStartingBlock, winner, value) => {
-        notification.open({
-          key: Math.random().toString(),
-          message: "Withdrawal",
-          description: `Round starting block: ${roundStartingBlock} | Winner: ${winner} | Value: ${value}`,
-        });
-        updateStoreProps();
-      });
+    if (signer) {
+      window.ethereum.on("accountsChanged", connectWallet);
+      window.ethereum.on("chainChanged", connectWallet);
     }
-  }, [provider]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [signer, connectWallet]);
+
+  useEffect(() => {
+    if (contract) {
+      contract.on("NewPlayer", newPlayerListener);
+      contract.on("Withdrawal", withdrawalListener);
+    }
+  }, [contract, newPlayerListener, withdrawalListener]);
 
   return (
     <StoreContext.Provider
