@@ -248,7 +248,7 @@ export class Lottery extends BaseContract {
   filters: {
     NewPlayer(
       roundStartingBlock?: null,
-      player?: null,
+      player?: string | null,
       value?: null
     ): TypedEventFilter<
       [BigNumber, string, BigNumber],
@@ -257,7 +257,7 @@ export class Lottery extends BaseContract {
 
     Withdrawal(
       roundStartingBlock?: null,
-      winner?: null,
+      winner?: string | null,
       value?: null
     ): TypedEventFilter<
       [BigNumber, string, BigNumber],

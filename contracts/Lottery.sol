@@ -10,9 +10,9 @@ contract Lottery {
 
     uint256 public roundDurationInBlocks = 10;
 
-    event NewPlayer(uint256 roundStartingBlock, address player, uint256 value);
+    event NewPlayer(uint256 roundStartingBlock, address indexed player, uint256 value);
 
-    event Withdrawal(uint256 roundStartingBlock, address winner, uint256 value);
+    event Withdrawal(uint256 roundStartingBlock, address indexed winner, uint256 value);
 
     modifier onlyFinishedRound(uint256 roundIndex) {
         uint256 roundStartingBlock = rounds[roundIndex];
